@@ -1,0 +1,181 @@
+{% extends 'emails/base_email.html' %}
+{% load currency_filters %}
+
+{% block title %}Order Delivered! - Order #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<h2 style="color: #28a745; margin-bottom: 20px;">
+  🎉 Your Order Has Been Delivered!
+</h2>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Dear <strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong>,
+</p>
+
+<p>
+  Wonderful news! Your JigsimurHerbal order has been successfully delivered.
+  We hope you're excited to start your natural health journey with our premium herbal products!
+</p>
+
+<div style="text-align: center; margin: 30px 0;">
+  <div
+    style="background-color: #d4edda; border: 2px solid #28a745; padding: 30px; border-radius: 12px; display: inline-block;">
+    <div style="font-size: 48px; margin-bottom: 10px;">📦✅</div>
+    <h3 style="color: #155724; margin: 0 0 10px 0;">Delivery Confirmed!</h3>
+    <p style="color: #155724; margin: 0; font-size: 14px;">
+      Order #{{ order.order_number }} delivered on {{ order.delivered_at|date:"F d, Y g:i A" }}
+    </p>
+  </div>
+</div>
+
+<div class="order-summary" style="margin: 30px 0;">
+  <h3 style="margin: 0 0 15px 0; color: #28a745;">
+    📋 Delivery Summary
+  </h3>
+
+  <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <strong>Order Number:</strong><br>
+        #{{ order.order_number }}
+      </div>
+      <div>
+        <strong>Delivery Date:</strong><br>
+        {{ order.delivered_at|date:"F d, Y" }}
+      </div>
+      <div>
+        <strong>Delivery Time:</strong><br>
+        {{ order.delivered_at|date:"g:i A" }}
+      </div>
+      <div>
+        <strong>Total Value:</strong><br>
+        <span style="color: #28a745; font-weight: 600;">{{ order.total_amount|currency }}</span>
+      </div>
+    </div>
+  </div>
+
+  <h4 style="margin: 20px 0 15px 0;">📦 Products Delivered:</h4>
+
+  {% for item in order.items.all %}
+  <div
+    style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: #fff; border: 1px solid #e9ecef; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div style="flex: 1;">
+      <strong style="color: #28a745;">{{ item.product.name }}</strong><br>
+      <small style="color: #6c757d;">Quantity: {{ item.quantity }} × {{ item.product_price|currency }}</small>
+    </div>
+    <div style="text-align: right;">
+      <span
+        style="background-color: #e8f5e8; color: #28a745; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+        ✅ DELIVERED
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div
+  style="margin: 30px 0; padding: 25px; background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%); border-radius: 12px; border: 1px solid #c3e6cb;">
+  <h4 style="color: #155724; margin: 0 0 20px 0; text-align: center;">🌿 Get the Most from Your Herbal Products</h4>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+    <div style="background-color: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+      <strong style="color: #28a745;">📖 Read Instructions</strong><br>
+      <small>Follow dosage guidelines for optimal results</small>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8;">
+      <strong style="color: #17a2b8;">🏠 Store Properly</strong><br>
+      <small>Keep in cool, dry place away from sunlight</small>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+      <strong style="color: #856404;">⏰ Be Consistent</strong><br>
+      <small>Take regularly for best health benefits</small>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
+      <strong style="color: #721c24;">👩‍⚕️ Consult if Needed</strong><br>
+      <small>Contact healthcare provider with questions</small>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <h4 style="color: #28a745; margin-bottom: 20px;">💫 How Was Your Experience?</h4>
+  <p style="margin-bottom: 20px;">
+    We'd love to hear about your experience with our products and delivery service!
+  </p>
+
+  <div style="margin: 20px 0;">
+    <a href="{{ website_url }}/products/review/?order={{ order.order_number }}" class="btn" style="margin: 5px;">
+      ⭐ Leave a Review
+    </a>
+    <a href="{{ website_url }}/users/orders/{{ order.id }}/" class="btn btn-secondary" style="margin: 5px;">
+      📋 View Order Details
+    </a>
+  </div>
+</div>
+
+<div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">🛍️ Ready for More?</h4>
+  <p style="color: #856404; margin-bottom: 15px;">
+    Continue your wellness journey with our other premium herbal products:
+  </p>
+
+  <div style="text-align: center;">
+    <a href="{{ website_url }}/products/"
+      style="display: inline-block; background-color: #28a745; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 5px;">
+      🌿 Explore Our Products
+    </a>
+    <a href="{{ website_url }}/products/bundles/"
+      style="display: inline-block; background-color: #17a2b8; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 5px;">
+      📦 View Health Bundles
+    </a>
+  </div>
+</div>
+
+<div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">🤝 Need Support?</h4>
+  <p style="margin-bottom: 15px;">
+    Have questions about your products or need assistance? We're here to help:
+  </p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+    <div style="text-align: center;">
+      <strong>📧 Email Support</strong><br>
+      <a href="mailto:support@jigsimurherbalwonders.com" style="color: #28a745;">support@jigsimurherbalwonders.com</a>
+    </div>
+    <div style="text-align: center;">
+      <strong>📞 Call Us</strong><br>
+      <a href="tel:+2348023456789" style="color: #28a745;">+234 802 345 6789</a>
+    </div>
+    <div style="text-align: center;">
+      <strong>💬 WhatsApp</strong><br>
+      <a href="https://wa.me/2348023456789" style="color: #28a745;">Quick Chat</a>
+    </div>
+    <div style="text-align: center;">
+      <strong>📚 Health Guide</strong><br>
+      <a href="{{ website_url }}/health-guide/" style="color: #28a745;">Wellness Tips</a>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; margin: 40px 0; padding: 20px;">
+  <div style="border-top: 2px solid #28a745; padding-top: 20px;">
+    <p style="font-size: 18px; color: #28a745; font-weight: 600; margin-bottom: 10px;">
+      Thank you for choosing JigsimurHerbal! 🙏
+    </p>
+    <p style="margin: 0;">
+      We're honored to be part of your natural health journey. Here's to your wellness and vitality!
+    </p>
+  </div>
+</div>
+
+<p style="color: #28a745; font-weight: 600; text-align: center;">
+  Wishing you vibrant health and natural wellness,<br>
+  The JigsimurHerbal Family 🌿💚
+</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<p style="font-size: 11px; color: #999;">
+  This is a delivery confirmation for your order. You cannot unsubscribe from order notifications.
+</p>
+{% endblock %}

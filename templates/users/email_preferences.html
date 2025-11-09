@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Email Preferences - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-lg">
+        <div class="card-header bg-success text-white">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-envelope me-3" style="font-size: 1.5rem;"></i>
+            <div>
+              <h4 class="mb-0">Email Preferences</h4>
+              <small>Manage your email communication settings</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-4">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h5 class="text-success mb-3">🛍️ Order & Transaction Emails</h5>
+                <p class="text-muted small">These emails contain important information about your orders and account.
+                </p>
+
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="order_updates" name="order_updates" {% if
+                    preferences.order_updates %}checked{% endif %}>
+                  <label class="form-check-label" for="order_updates">
+                    <strong>Order Updates</strong>
+                    <small class="d-block text-muted">Order confirmations, shipping notifications, and delivery
+                      updates</small>
+                  </label>
+                </div>
+
+                <div class="alert alert-warning border-0">
+                  <small><i class="fas fa-info-circle me-2"></i>Order-related emails cannot be disabled as they contain
+                    important transaction information.</small>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h5 class="text-success mb-3">📧 Marketing & Newsletter</h5>
+                <p class="text-muted small">Stay updated with health tips, new products, and exclusive offers.</p>
+
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter" {% if
+                    preferences.newsletter %}checked{% endif %}>
+                  <label class="form-check-label" for="newsletter">
+                    <strong>Weekly Newsletter</strong>
+                    <small class="d-block text-muted">Health tips, wellness advice, and herbal knowledge</small>
+                  </label>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="promotional_offers" name="promotional_offers" {%
+                    if preferences.promotional_offers %}checked{% endif %}>
+                  <label class="form-check-label" for="promotional_offers">
+                    <strong>Promotional Offers</strong>
+                    <small class="d-block text-muted">Special discounts, sales notifications, and exclusive
+                      deals</small>
+                  </label>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" id="product_recommendations"
+                    name="product_recommendations" {% if preferences.product_recommendations %}checked{% endif %}>
+                  <label class="form-check-label" for="product_recommendations">
+                    <strong>Product Recommendations</strong>
+                    <small class="d-block text-muted">Personalized product suggestions based on your interests</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h5 class="text-success mb-3">📞 Communication Preferences</h5>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="email_frequency" class="form-label">Email Frequency</label>
+                    <select class="form-select" id="email_frequency" name="email_frequency">
+                      <option value="daily">Daily Updates</option>
+                      <option value="weekly" selected>Weekly Digest</option>
+                      <option value="monthly">Monthly Summary</option>
+                      <option value="essential">Essential Only</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="preferred_time" class="form-label">Preferred Time</label>
+                    <select class="form-select" id="preferred_time" name="preferred_time">
+                      <option value="morning" selected>Morning (8-12 PM)</option>
+                      <option value="afternoon">Afternoon (12-6 PM)</option>
+                      <option value="evening">Evening (6-10 PM)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="row mb-4">
+              <div class="col-12">
+                <h5 class="text-success mb-3">🎯 Content Interests</h5>
+                <p class="text-muted small">Help us send you more relevant content by selecting your interests.</p>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="immunity" name="interests" value="immunity">
+                      <label class="form-check-label" for="immunity">
+                        🛡️ Immune Support
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="energy" name="interests" value="energy">
+                      <label class="form-check-label" for="energy">
+                        ⚡ Energy & Vitality
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="stress" name="interests" value="stress">
+                      <label class="form-check-label" for="stress">
+                        🧘 Stress Management
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="digestion" name="interests" value="digestion">
+                      <label class="form-check-label" for="digestion">
+                        🍃 Digestive Health
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="sleep" name="interests" value="sleep">
+                      <label class="form-check-label" for="sleep">
+                        😴 Sleep Support
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="skin" name="interests" value="skin">
+                      <label class="form-check-label" for="skin">
+                        ✨ Skin Health
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="weightloss" name="interests"
+                        value="weightloss">
+                      <label class="form-check-label" for="weightloss">
+                        🏃 Weight Management
+                      </label>
+                    </div>
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" id="general" name="interests" value="general">
+                      <label class="form-check-label" for="general">
+                        🌿 General Wellness
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <button type="submit" class="btn btn-success btn-lg">
+                      <i class="fas fa-save me-2"></i>Save Preferences
+                    </button>
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                  </div>
+                  <div class="text-end">
+                    <a href="{% url 'orders:newsletter_unsubscribe' %}" class="btn btn-link text-danger">
+                      <i class="fas fa-unsubscribe me-1"></i>Unsubscribe from All
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Privacy Notice -->
+      <div class="card border-0 mt-4">
+        <div class="card-body bg-light">
+          <h6 class="text-success"><i class="fas fa-shield-alt me-2"></i>Privacy & Security</h6>
+          <p class="small text-muted mb-0">
+            We respect your privacy and will never share your email address with third parties.
+            You can update these preferences anytime or unsubscribe completely.
+            <a href="/privacy-policy/" class="text-decoration-none">Read our Privacy Policy</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="card border-0 bg-primary text-white h-100">
+            <div class="card-body text-center">
+              <i class="fas fa-envelope-open-text fa-2x mb-2"></i>
+              <h6>Newsletter Archive</h6>
+              <p class="small mb-0">View past newsletters</p>
+              <a href="/newsletter/archive/" class="btn btn-light btn-sm mt-2">Browse</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card border-0 bg-info text-white h-100">
+            <div class="card-body text-center">
+              <i class="fas fa-bell fa-2x mb-2"></i>
+              <h6>Notification Settings</h6>
+              <p class="small mb-0">Manage push notifications</p>
+              <a href="/users/notifications/" class="btn btn-light btn-sm mt-2">Manage</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card border-0 bg-success text-white h-100">
+            <div class="card-body text-center">
+              <i class="fas fa-heart fa-2x mb-2"></i>
+              <h6>Health Interests</h6>
+              <p class="small mb-0">Update health goals</p>
+              <a href="/users/health-profile/" class="btn btn-light btn-sm mt-2">Update</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+
+  .form-check-input:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+  }
+
+  .card {
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Add form validation and user feedback
+    const form = document.querySelector('form');
+    const switches = document.querySelectorAll('.form-check-input[type="checkbox"]');
+
+    // Show confirmation on preference changes
+    switches.forEach(switch_ => {
+      switch_.addEventListener('change', function () {
+        if (this.checked) {
+          this.parentElement.classList.add('text-success');
+        } else {
+          this.parentElement.classList.remove('text-success');
+        }
+      });
+    });
+
+    // Form submission feedback
+    form.addEventListener('submit', function (e) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+      submitBtn.disabled = true;
+
+      // Re-enable after 3 seconds if form doesn't submit
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }, 3000);
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Welcome to JigsimurHerbal Newsletter! 🌿{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-bottom: 30px;">
+  <h1 style="color: #28a745; font-size: 32px; margin-bottom: 15px;">
+    🌿 Welcome to JigsimurHerbal!
+  </h1>
+  <p style="font-size: 18px; color: #495057; margin: 0;">
+    Your journey to natural wellness starts here
+  </p>
+</div>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Hello <strong>{{ user.first_name|default:"Friend" }}</strong>,
+</p>
+
+<p style="font-size: 16px; line-height: 1.8; margin-bottom: 25px;">
+  A warm welcome to the JigsimurHerbal family! 🎉 We're thrilled to have you join our community of health-conscious
+  individuals
+  who believe in the power of natural healing. You've taken an important step toward transforming your wellness journey.
+</p>
+
+<div
+  style="background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%); padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
+  <h3 style="color: #155724; margin: 0 0 20px 0;">🎁 Welcome Gift Inside!</h3>
+  <div style="background-color: #fff; padding: 25px; border-radius: 10px; margin: 20px 0; border: 2px dashed #28a745;">
+    <div style="font-size: 48px; margin-bottom: 15px;">🏷️</div>
+    <h2 style="color: #dc3545; font-size: 36px; margin: 0 0 10px 0;">15% OFF</h2>
+    <p style="margin: 0 0 15px 0; color: #495057;">Your first order with us</p>
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+      <code style="font-size: 18px; font-weight: 600; color: #28a745; letter-spacing: 2px;">WELCOME15</code>
+    </div>
+    <p style="font-size: 14px; color: #6c757d; margin: 0;">
+      Valid for 30 days • Minimum order: ₦5,000
+    </p>
+  </div>
+  <a href="{{ website_url }}/products/?discount=WELCOME15" class="btn" style="font-size: 18px; padding: 15px 30px;">
+    🛍️ Shop Now & Save!
+  </a>
+</div>
+
+<div style="margin: 40px 0;">
+  <h3 style="color: #28a745; text-align: center; margin-bottom: 25px;">
+    🌟 What to Expect from JigsimurHerbal
+  </h3>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+    <div
+      style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🌿</div>
+        <h4 style="color: #28a745; margin: 0;">Premium Herbal Products</h4>
+      </div>
+      <p style="text-align: center; margin: 0; line-height: 1.6;">
+        Carefully sourced, lab-tested natural supplements crafted for your optimal health and wellness.
+      </p>
+    </div>
+
+    <div
+      style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">📚</div>
+        <h4 style="color: #28a745; margin: 0;">Expert Health Tips</h4>
+      </div>
+      <p style="text-align: center; margin: 0; line-height: 1.6;">
+        Weekly wellness insights, usage guides, and natural health tips from our certified herbalists.
+      </p>
+    </div>
+
+    <div
+      style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🎯</div>
+        <h4 style="color: #28a745; margin: 0;">Exclusive Offers</h4>
+      </div>
+      <p style="text-align: center; margin: 0; line-height: 1.6;">
+        Subscriber-only discounts, early access to new products, and special bundle deals.
+      </p>
+    </div>
+
+    <div
+      style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🤝</div>
+        <h4 style="color: #28a745; margin: 0;">Community Support</h4>
+      </div>
+      <p style="text-align: center; margin: 0; line-height: 1.6;">
+        Connect with like-minded individuals on their wellness journeys and share experiences.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div style="background-color: #f8f9fa; padding: 25px; border-radius: 12px; margin: 30px 0;">
+  <h3 style="color: #495057; text-align: center; margin-bottom: 20px;">
+    🎯 Recommended Products for Beginners
+  </h3>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+    <div
+      style="background-color: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; text-align: center;">
+      <h4 style="color: #28a745; margin: 0 0 10px 0;">🍵 Immune Boost</h4>
+      <p style="margin: 0 0 15px 0; font-size: 14px;">
+        Natural immunity support for daily wellness
+      </p>
+      <a href="{{ website_url }}/products/immune-boost/" style="color: #28a745; font-weight: 600;">Learn More →</a>
+    </div>
+
+    <div
+      style="background-color: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107; text-align: center;">
+      <h4 style="color: #856404; margin: 0 0 10px 0;">⚡ Energy Blend</h4>
+      <p style="margin: 0 0 15px 0; font-size: 14px;">
+        Natural energy enhancement without caffeine crashes
+      </p>
+      <a href="{{ website_url }}/products/energy-blend/" style="color: #856404; font-weight: 600;">Learn More →</a>
+    </div>
+
+    <div
+      style="background-color: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #17a2b8; text-align: center;">
+      <h4 style="color: #0c5460; margin: 0 0 10px 0;">🧘 Stress Relief</h4>
+      <p style="margin: 0 0 15px 0; font-size: 14px;">
+        Calm your mind and reduce daily stress naturally
+      </p>
+      <a href="{{ website_url }}/products/stress-relief/" style="color: #0c5460; font-weight: 600;">Learn More →</a>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 25px;">
+    <a href="{{ website_url }}/products/starter-pack/" class="btn" style="background-color: #ffc107; color: #212529;">
+      🎁 View Complete Starter Pack
+    </a>
+  </div>
+</div>
+
+<div style="background-color: #e8f4f8; padding: 25px; border-radius: 12px; margin: 30px 0;">
+  <h3 style="color: #0c5460; text-align: center; margin-bottom: 20px;">
+    📱 Stay Connected
+  </h3>
+  <p style="text-align: center; margin-bottom: 20px;">
+    Follow us on social media for daily health tips, success stories, and community updates:
+  </p>
+
+  <div style="text-align: center; margin: 20px 0;">
+    <a href="#"
+      style="display: inline-block; margin: 0 15px; padding: 12px 20px; background-color: #1877f2; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600;">
+      📘 Facebook
+    </a>
+    <a href="#"
+      style="display: inline-block; margin: 0 15px; padding: 12px 20px; background-color: #1da1f2; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600;">
+      🐦 Twitter
+    </a>
+    <a href="#"
+      style="display: inline-block; margin: 0 15px; padding: 12px 20px; background-color: #e4405f; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600;">
+      📷 Instagram
+    </a>
+    <a href="https://wa.me/2348023456789"
+      style="display: inline-block; margin: 0 15px; padding: 12px 20px; background-color: #25D366; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600;">
+      💬 WhatsApp
+    </a>
+  </div>
+</div>
+
+<div style="margin: 30px 0; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">💡 Quick Start Guide</h4>
+  <ol style="color: #856404; margin: 0; padding-left: 20px; line-height: 1.8;">
+    <li><strong>Browse our products</strong> and read customer reviews</li>
+    <li><strong>Start with our beginner-friendly</strong> products</li>
+    <li><strong>Use your WELCOME15 discount</strong> on your first order</li>
+    <li><strong>Follow the usage instructions</strong> included with each product</li>
+    <li><strong>Join our community</strong> and share your wellness journey</li>
+  </ol>
+</div>
+
+<div style="text-align: center; margin: 40px 0;">
+  <a href="{{ website_url }}/products/" class="btn" style="font-size: 18px; padding: 15px 30px;">
+    🌿 Explore All Products
+  </a>
+  <a href="{{ website_url }}/health-guide/" class="btn btn-secondary" style="font-size: 18px; padding: 15px 30px;">
+    📖 Read Health Guide
+  </a>
+</div>
+
+<div
+  style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
+  <h4 style="color: #155724; margin: 0 0 15px 0;">🤝 We're Here for You</h4>
+  <p style="color: #155724; margin: 0 0 20px 0; line-height: 1.6;">
+    Have questions about our products or natural health in general?
+    Our friendly support team is always ready to help you on your wellness journey.
+  </p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+    <div>
+      <strong>📧 Email Us</strong><br>
+      <a href="mailto:support@jigsimurherbalwonders.com" style="color: #28a745;">support@jigsimurherbalwonders.com</a>
+    </div>
+    <div>
+      <strong>📞 Call Us</strong><br>
+      <a href="tel:+2348023456789" style="color: #28a745;">+234 802 345 6789</a>
+    </div>
+    <div>
+      <strong>💬 Chat</strong><br>
+      <a href="https://wa.me/2348023456789" style="color: #25D366;">WhatsApp Support</a>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 40px; text-align: center; font-size: 18px; line-height: 1.8;">
+  Thank you for joining us on this incredible journey toward natural health and wellness.
+  Together, we'll help you achieve your health goals naturally!
+</p>
+
+<p style="color: #28a745; font-weight: 600; text-align: center; font-size: 18px;">
+  Welcome to the JigsimurHerbal family! 🌿💚<br>
+  <em>Your Natural Health Journey Starts Now</em>
+</p>
+{% endblock %}

@@ -1,0 +1,437 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load currency_filters %}
+
+{% block title %}Checkout - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0"><i class="fas fa-credit-card"></i> Checkout</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" id="checkout-form">
+            {% csrf_token %}
+
+            <!-- Billing Information -->
+            <div class="mb-4">
+              <h5 class="text-success mb-3"><i class="fas fa-user"></i> Billing Information</h5>
+              <div class="row">
+                <div class="col-md-6">{{ form.billing_first_name|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.billing_last_name|as_crispy_field }}</div>
+              </div>
+              {{ form.billing_company|as_crispy_field }}
+              {{ form.billing_address_line_1|as_crispy_field }}
+              {{ form.billing_address_line_2|as_crispy_field }}
+              <div class="row">
+                <div class="col-md-4">{{ form.billing_city|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.billing_state|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.billing_postal_code|as_crispy_field }}</div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">{{ form.billing_country|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.billing_phone|as_crispy_field }}</div>
+              </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="mb-4">
+              <h5 class="text-success mb-3"><i class="fas fa-truck"></i> Shipping Information</h5>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="same-as-billing">
+                <label class="form-check-label" for="same-as-billing">
+                  Same as billing address
+                </label>
+              </div>
+              <div id="shipping-fields">
+                <div class="row">
+                  <div class="col-md-6">{{ form.shipping_first_name|as_crispy_field }}</div>
+                  <div class="col-md-6">{{ form.shipping_last_name|as_crispy_field }}</div>
+                </div>
+                {{ form.shipping_company|as_crispy_field }}
+                {{ form.shipping_address_line_1|as_crispy_field }}
+                {{ form.shipping_address_line_2|as_crispy_field }}
+                <div class="row">
+                  <div class="col-md-4">{{ form.shipping_city|as_crispy_field }}</div>
+                  <div class="col-md-4">{{ form.shipping_state|as_crispy_field }}</div>
+                  <div class="col-md-4">{{ form.shipping_postal_code|as_crispy_field }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">{{ form.shipping_country|as_crispy_field }}</div>
+                  <div class="col-md-6">{{ form.shipping_phone|as_crispy_field }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shipping Method -->
+            {% if shipping_methods %}
+            <div class="mb-4">
+              <h5 class="text-success mb-3"><i class="fas fa-shipping-fast"></i> Shipping Method</h5>
+              {% for shipping_method in shipping_methods %}
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="shipping_method"
+                  id="shipping_{{ shipping_method.id }}" value="{{ shipping_method.id }}" required>
+                <label class="form-check-label d-flex justify-content-between w-100"
+                  for="shipping_{{ shipping_method.id }}">
+                  <div>
+                    <strong>{{ shipping_method.name }}</strong>
+                    <small class="text-muted d-block">{{ shipping_method.description }}</small>
+                    <small class="text-muted">Estimated delivery: {{ shipping_method.estimated_days }} days</small>
+                  </div>
+                  <div class="text-end">
+                    <strong>{{ shipping_method.price|currency }}</strong>
+                  </div>
+                </label>
+              </div>
+              <hr>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Payment Method -->
+            <div class="mb-4">
+              <h5 class="text-success mb-3"><i class="fas fa-credit-card"></i> Payment Method</h5>
+              <div class="row">
+                {% for choice in form.payment_method %}
+                <div class="col-12 col-sm-6 mb-2">
+                  <div class="form-check">
+                    {{ choice.tag }}
+                    <label class="form-check-label" for="{{ choice.id_for_label }}">
+                      {% if choice.choice_value == 'paystack' %}
+                      <i class="fas fa-credit-card text-primary"></i> {{ choice.choice_label }}
+                      {% elif choice.choice_value == 'bank_transfer' %}
+                      <i class="fas fa-university text-info"></i> {{ choice.choice_label }}
+                      {% elif choice.choice_value == 'cash_on_delivery' %}
+                      <i class="fas fa-money-bill-alt text-success"></i> {{ choice.choice_label }}
+                      {% else %}
+                      {{ choice.choice_label }}
+                      {% endif %}
+                    </label>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% if form.payment_method.errors %}
+              <div class="invalid-feedback d-block">
+                {{ form.payment_method.errors.0 }}
+              </div>
+              {% endif %}
+
+              <!-- Bank Transfer Information Button -->
+              <div id="bank-transfer-info" style="display: none;" class="mt-3">
+                <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#bankTransferModal">
+                  <i class="fas fa-info-circle"></i> View Bank Transfer Details
+                </button>
+              </div>
+            </div>
+
+            <!-- Order Notes -->
+            <div class="mb-4">
+              {{ form.notes|as_crispy_field }}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100">
+              <i class="fas fa-lock"></i> Place Order
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Order Summary</h5>
+        </div>
+        <div class="card-body">
+          {% for item in cart_items %}
+          <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+            <!-- Product Image -->
+            <div class="flex-shrink-0 me-3">
+              {% if item.product.image %}
+              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail"
+                style="width: 60px; height: 60px; object-fit: cover;">
+              {% else %}
+              <img src="https://via.placeholder.com/60x60?text=Product" alt="{{ item.product.name }}"
+                class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+              {% endif %}
+            </div>
+
+            <!-- Product Info -->
+            <div class="flex-grow-1">
+              <h6 class="mb-1">{{ item.product.name }}</h6>
+              <small class="text-muted">Qty: {{ item.quantity }} @ {{ item.product.price|currency }} each</small>
+            </div>
+
+            <!-- Price -->
+            <div class="text-end">
+              <strong>{{ item.get_total_price|currency }}</strong>
+            </div>
+          </div>
+          {% endfor %}
+
+          <hr>
+
+          <div class="d-flex justify-content-between">
+            <span>Subtotal:</span>
+            <span>{{ cart.total_price|currency }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Shipping:</span>
+            <span id="shipping-cost">₦0.00</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Tax:</span>
+            <span>₦0.00</span>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between">
+            <strong>Total:</strong>
+            <strong id="total-cost">{{ cart.total_price|currency }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Same as billing checkbox
+    const sameAsBillingCheckbox = document.getElementById('same-as-billing');
+    const shippingFields = document.getElementById('shipping-fields');
+
+    sameAsBillingCheckbox.addEventListener('change', function () {
+      if (this.checked) {
+        shippingFields.style.display = 'none';
+        // Copy billing info to shipping fields
+        copyBillingToShipping();
+      } else {
+        shippingFields.style.display = 'block';
+      }
+    });
+
+    function copyBillingToShipping() {
+      const billingFields = ['first_name', 'last_name', 'company', 'address_line_1', 'address_line_2', 'city', 'state', 'postal_code', 'country', 'phone'];
+      billingFields.forEach(field => {
+        const billingField = document.querySelector(`[name="billing_${field}"]`);
+        const shippingField = document.querySelector(`[name="shipping_${field}"]`);
+        if (billingField && shippingField) {
+          shippingField.value = billingField.value;
+        }
+      });
+    }
+
+    // Shipping method selection
+    const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
+    const shippingCostElement = document.getElementById('shipping-cost');
+    const totalCostElement = document.getElementById('total-cost');
+    const subtotal = parseFloat('{{ cart.total_price }}');
+
+    shippingRadios.forEach(radio => {
+      radio.addEventListener('change', function () {
+        const shippingCost = parseFloat(this.closest('label').querySelector('strong').textContent.replace('₦', ''));
+        const total = subtotal + shippingCost;
+
+        shippingCostElement.textContent = '₦' + shippingCost.toFixed(2);
+        totalCostElement.textContent = '₦' + total.toFixed(2);
+      });
+    });
+
+    // Payment method selection
+    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+    const bankTransferInfo = document.getElementById('bank-transfer-info');
+
+    paymentRadios.forEach(radio => {
+      radio.addEventListener('change', function () {
+        if (this.value === 'bank_transfer') {
+          bankTransferInfo.style.display = 'block';
+        } else {
+          bankTransferInfo.style.display = 'none';
+        }
+      });
+    });
+
+    // Check initial payment method selection
+    const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+    if (selectedPayment && selectedPayment.value === 'bank_transfer') {
+      bankTransferInfo.style.display = 'block';
+    }
+  });
+</script>
+
+<!-- Bank Transfer Modal -->
+<div class="modal fade" id="bankTransferModal" tabindex="-1" aria-labelledby="bankTransferModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="bankTransferModalLabel">
+          <i class="fas fa-university"></i> Bank Transfer Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i>
+          <strong>Please transfer the total amount to the bank account below and use your order number as the transfer
+            reference.</strong>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card border-success">
+              <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="fas fa-building"></i> Primary Account</h6>
+              </div>
+              <div class="card-body">
+                <table class="table table-borderless">
+                  <tr>
+                    <td><strong>Bank Name:</strong></td>
+                    <td>First Bank of Nigeria</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Account Name:</strong></td>
+                    <td>JigsimurHerbal Limited</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Account Number:</strong></td>
+                    <td><span class="fw-bold text-primary">3085436290</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sort Code:</strong></td>
+                    <td>011151003</td>
+                  </tr>
+                </table>
+                <button class="btn btn-outline-primary btn-sm" onclick="copyAccountNumber('3085436290')">
+                  <i class="fas fa-copy"></i> Copy Account Number
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card border-info">
+              <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="fas fa-building"></i> Alternative Account</h6>
+              </div>
+              <div class="card-body">
+                <table class="table table-borderless">
+                  <tr>
+                    <td><strong>Bank Name:</strong></td>
+                    <td>Guaranty Trust Bank</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Account Name:</strong></td>
+                    <td>JigsimurHerbal Limited</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Account Number:</strong></td>
+                    <td><span class="fw-bold text-primary">0123456789</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sort Code:</strong></td>
+                    <td>058152052</td>
+                  </tr>
+                </table>
+                <button class="btn btn-outline-primary btn-sm" onclick="copyAccountNumber('0123456789')">
+                  <i class="fas fa-copy"></i> Copy Account Number
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h6 class="text-success"><i class="fas fa-list-check"></i> Transfer Instructions:</h6>
+          <ol class="list-group list-group-numbered">
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Complete Your Order</div>
+                First, complete this checkout process to get your order number.
+              </div>
+              <span class="badge bg-success rounded-pill">1</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Make the Transfer</div>
+                Transfer the exact amount to one of the bank accounts above.
+              </div>
+              <span class="badge bg-success rounded-pill">2</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Use Order Number as Reference</div>
+                Use your order number as the transfer reference/narration.
+              </div>
+              <span class="badge bg-success rounded-pill">3</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Send Payment Proof</div>
+                Email payment proof to: <strong>orders@jigsimurherbalwonders.com</strong>
+              </div>
+              <span class="badge bg-success rounded-pill">4</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="alert alert-warning mt-3">
+          <i class="fas fa-clock"></i>
+          <strong>Processing Time:</strong> Orders are typically processed within 2-4 hours after payment confirmation
+          during business hours (9 AM - 6 PM, Monday to Friday).
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times"></i> Close
+        </button>
+        <a href="mailto:orders@jigsimurherbalwonders.com" class="btn btn-success">
+          <i class="fas fa-envelope"></i> Email Support
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyAccountNumber(accountNumber) {
+    navigator.clipboard.writeText(accountNumber).then(function () {
+      // Create a temporary toast notification
+      const toast = document.createElement('div');
+      toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed';
+      toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-atomic', 'true');
+
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="fas fa-check-circle"></i> Account number copied to clipboard!
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+
+      document.body.appendChild(toast);
+      const bsToast = new bootstrap.Toast(toast);
+      bsToast.show();
+
+      // Remove the toast after it's hidden
+      toast.addEventListener('hidden.bs.toast', function () {
+        document.body.removeChild(toast);
+      });
+    }).catch(function () {
+      alert('Account number: ' + accountNumber);
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load currency_filters %}
+
+{% block title %}Premium Herbal Products - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-success text-white py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-3">Natural Health Solutions</h1>
+        <p class="lead mb-4">Discover the power of nature with our premium herbal products. Quality you can trust,
+          wellness you can feel.</p>
+        <a href="{% url 'products:product_list' %}" class="btn btn-light btn-lg">
+          <i class="fas fa-leaf me-2"></i>Shop Now
+        </a>
+      </div>
+      <div class="col-lg-6">
+        <img src="https://via.placeholder.com/600x400?text=Herbal+Products" alt="Herbal Products"
+          class="img-fluid rounded">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h2 class="display-5 fw-bold text-success">Featured Products</h2>
+        <p class="lead">Discover our most popular herbal solutions</p>
+      </div>
+    </div>
+    <div class="row">
+      {% for product in featured_products %}
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="position-relative">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+              style="height: 200px; object-fit: cover;">
+            {% else %}
+            <img
+              src="https://via.placeholder.com/300x200/28a745/ffffff?text={{ product.name|truncatewords:2|urlencode }}"
+              class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            {% if product.is_on_sale %}
+            <span class="position-absolute top-0 start-0 badge bg-danger m-2">
+              -{{ product.discount_percentage }}%
+            </span>
+            {% endif %}
+            {% if product.is_featured %}
+            <span class="position-absolute top-0 end-0 badge bg-success m-2">
+              Featured
+            </span>
+            {% endif %}
+          </div>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text text-muted">{{ product.short_description|truncatewords:15 }}</p>
+            <div class="mt-auto">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="price">
+                  <span class="h5 text-success fw-bold">{{ product.price|currency }}</span>
+                  {% if product.original_price %}
+                  <span class="text-muted text-decoration-line-through ms-2">
+                    {{ product.original_price|currency }}</span>
+                  {% endif %}
+                </div>
+                <small class="text-muted">
+                  {% if product.is_in_stock %}
+                  <i class="fas fa-check-circle text-success"></i> In Stock
+                  {% else %}
+                  <i class="fas fa-times-circle text-danger"></i> Out of Stock
+                  {% endif %}
+                </small>
+              </div>
+              <div class="d-grid gap-2">
+                <a href="{{ product.get_absolute_url }}" class="btn btn-outline-success">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'products:product_list' %}" class="btn btn-success btn-lg">
+        View All Products <i class="fas fa-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Categories -->
+{% if categories %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h2 class="display-5 fw-bold text-success">Shop by Category</h2>
+        <p class="lead">Find the right herbal solution for your needs</p>
+      </div>
+    </div>
+    <div class="row">
+      {% for category in categories %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <div class="mb-3">
+              {% if category.image %}
+              <img src="{{ category.image.url }}" alt="{{ category.name }}" class="rounded-circle"
+                style="width: 80px; height: 80px; object-fit: cover;">
+              {% else %}
+              <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center"
+                style="width: 80px; height: 80px;">
+                <i class="fas fa-leaf fa-2x"></i>
+              </div>
+              {% endif %}
+            </div>
+            <h5 class="card-title text-success">{{ category.name }}</h5>
+            <p class="card-text">{{ category.description|truncatewords:20 }}</p>
+            <a href="{{ category.get_absolute_url }}" class="btn btn-outline-success">
+              Explore <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Why Choose Us -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h2 class="display-5 fw-bold text-success">Why Choose JigsimurHerbal?</h2>
+        <p class="lead">Your health is our priority</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="text-center">
+          <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+            style="width: 80px; height: 80px;">
+            <i class="fas fa-leaf fa-2x"></i>
+          </div>
+          <h5>100% Natural</h5>
+          <p class="text-muted">All our products are made from pure, natural ingredients with no artificial additives.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="text-center">
+          <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+            style="width: 80px; height: 80px;">
+            <i class="fas fa-shield-alt fa-2x"></i>
+          </div>
+          <h5>Quality Assured</h5>
+          <p class="text-muted">Rigorous testing and quality control ensure the highest standards for all products.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="text-center">
+          <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+            style="width: 80px; height: 80px;">
+            <i class="fas fa-shipping-fast fa-2x"></i>
+          </div>
+          <h5>Fast Shipping</h5>
+          <p class="text-muted">Quick and secure delivery to get your wellness products to you as soon as possible.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="text-center">
+          <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+            style="width: 80px; height: 80px;">
+            <i class="fas fa-headset fa-2x"></i>
+          </div>
+          <h5>Expert Support</h5>
+          <p class="text-muted">Our knowledgeable team is here to help you find the right products for your needs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="py-5 bg-success text-white">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h3 class="fw-bold mb-3">Stay Updated with Natural Health Tips</h3>
+        <p class="mb-0">Subscribe to our newsletter for exclusive offers, health tips, and new product announcements.
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <form class="row g-3">
+          <div class="col-md-8">
+            <input type="email" class="form-control form-control-lg" placeholder="Enter your email address" required>
+          </div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-light btn-lg w-100">Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

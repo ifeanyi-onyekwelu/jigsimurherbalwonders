@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load currency_filters %}
+
+{% block title %}{{ category.name }} - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Category Header -->
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      {% if category.image %}
+      <img src="{{ category.image.url }}" alt="{{ category.name }}" class="rounded-circle mb-3"
+        style="width: 120px; height: 120px; object-fit: cover;">
+      {% endif %}
+      <h1 class="display-4 fw-bold text-success mb-3">{{ category.name }}</h1>
+      {% if category.description %}
+      <p class="lead text-muted">{{ category.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Sort and Filter Options -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Products</a></li>
+          <li class="breadcrumb-item active">{{ category.name }}</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-md-6 text-md-end">
+      <form method="GET" class="d-inline">
+        <select name="sort" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+          <option value="-created_at">Newest First</option>
+          <option value="name">Name A-Z</option>
+          <option value="-name">Name Z-A</option>
+          <option value="price">Price Low-High</option>
+          <option value="-price">Price High-Low</option>
+        </select>
+      </form>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  {% if page_obj %}
+  <div class="row">
+    {% for product in page_obj %}
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card h-100 shadow-sm product-card">
+        <div class="position-relative">
+          {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+            style="height: 200px; object-fit: cover;">
+          {% else %}
+          <img src="https://via.placeholder.com/300x200?text=Product+Image" class="card-img-top"
+            alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+          {% endif %}
+
+          {% if product.is_on_sale %}
+          <span class="position-absolute top-0 start-0 badge bg-danger m-2">
+            -{{ product.discount_percentage }}%
+          </span>
+          {% endif %}
+
+          {% if product.is_featured %}
+          <span class="position-absolute top-0 end-0 badge bg-success m-2">
+            Featured
+          </span>
+          {% endif %}
+
+          {% if not product.is_in_stock %}
+          <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="badge bg-dark fs-6">Out of Stock</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text text-muted small flex-grow-1">
+            {{ product.short_description|truncatewords:15 }}
+          </p>
+
+          <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="price">
+                <span class="h6 text-success fw-bold">{{ product.price|currency }}</span>
+                {% if product.original_price %}
+                <span class="text-muted text-decoration-line-through ms-1 small">
+                  {{ product.original_price|currency }}
+                </span>
+                {% endif %}
+              </div>
+              <small class="text-muted">
+                {% if product.is_in_stock %}
+                <i class="fas fa-check-circle text-success"></i> In Stock
+                {% else %}
+                <i class="fas fa-times-circle text-danger"></i> Out of Stock
+                {% endif %}
+              </small>
+            </div>
+
+            <div class="d-grid gap-2">
+              <a href="{{ product.get_absolute_url }}" class="btn btn-outline-success btn-sm">
+                View Details
+              </a>
+              {% if product.is_in_stock %}
+              <form method="post" action="{% url 'orders:add_to_cart' product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-sm w-100">
+                  <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+  <nav aria-label="Category products pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+          href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">
+          Previous
+        </a>
+      </li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+      <li class="page-item active">
+        <span class="page-link">{{ num }}</span>
+      </li>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item">
+        <a class="page-link"
+          href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">
+          {{ num }}
+        </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link"
+            href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">
+            Next
+          </a>
+        </li>
+        {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+  {% else %}
+  <!-- No Products in Category -->
+  <div class="text-center py-5">
+    <div class="mb-4">
+      <i class="fas fa-box-open fa-5x text-muted"></i>
+    </div>
+    <h4 class="text-muted mb-3">No products in this category</h4>
+    <p class="text-muted mb-4">Check back soon for new products!</p>
+    <a href="{% url 'products:product_list' %}" class="btn btn-success">
+      <i class="fas fa-arrow-left me-2"></i>Browse All Products
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .product-card {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+</style>
+{% endblock %}

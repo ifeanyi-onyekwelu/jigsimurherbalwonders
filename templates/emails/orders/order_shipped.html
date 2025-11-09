@@ -1,0 +1,164 @@
+{% extends 'emails/base_email.html' %}
+{% load currency_filters %}
+
+{% block title %}Your Order Has Shipped! - Order #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<h2 style="color: #28a745; margin-bottom: 20px;">
+  🚚 Your Order is On Its Way!
+</h2>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Dear <strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong>,
+</p>
+
+<p>
+  Exciting news! Your JigsimurHerbal order has been shipped and is making its way to you.
+  Your natural health journey continues with premium herbal products coming your way!
+</p>
+
+<div class="order-summary">
+  <h3 style="margin: 0 0 15px 0; color: #28a745;">
+    📦 Shipping Information
+  </h3>
+
+  <div style="margin-bottom: 20px; padding: 20px; background-color: #e8f5e8; border-radius: 8px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+      <div>
+        <strong style="color: #28a745;">Order #{{ order.order_number }}</strong><br>
+        <small>Shipped on {{ order.shipped_at|date:"F d, Y" }}</small>
+      </div>
+      <div style="text-align: right;">
+        <strong style="color: #28a745;">Tracking Number:</strong><br>
+        <code style="background-color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 16px; color: #495057;">
+                    {{ order.tracking_number|default:"Will be provided soon" }}
+                </code>
+      </div>
+    </div>
+  </div>
+
+  {% if order.tracking_number %}
+  <div style="text-align: center; margin: 20px 0;">
+    <a href="{{ tracking_url }}" class="btn" style="font-size: 16px;">
+      📍 Track Your Package
+    </a>
+  </div>
+  {% endif %}
+
+  <div style="margin: 20px 0;">
+    <strong>Carrier:</strong> {{ order.shipping_carrier|default:"Nigeria Post Service" }}<br>
+    <strong>Estimated Delivery:</strong> {{ order.estimated_delivery_date|date:"F d, Y"|default:"3-7 business days"
+    }}<br>
+    <strong>Shipping Method:</strong> {{ order.get_shipping_method_display|default:"Standard Shipping" }}
+  </div>
+</div>
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">📍 Delivery Address</h4>
+  <address
+    style="font-style: normal; line-height: 1.8; background-color: #fff; padding: 15px; border-radius: 5px; border-left: 4px solid #28a745;">
+    <strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong><br>
+    {% if order.shipping_company %}{{ order.shipping_company }}<br>{% endif %}
+    {{ order.shipping_address_line_1 }}<br>
+    {% if order.shipping_address_line_2 %}{{ order.shipping_address_line_2 }}<br>{% endif %}
+    {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}<br>
+    {{ order.shipping_country }}
+    {% if order.shipping_phone %}<br><strong>Phone:</strong> {{ order.shipping_phone }}{% endif %}
+  </address>
+</div>
+
+<div style="margin: 30px 0;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">📋 Items in This Shipment</h4>
+
+  {% for item in order.items.all %}
+  <div
+    style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: #fff; border: 1px solid #e9ecef; margin-bottom: 10px; border-radius: 8px;">
+    <div style="flex: 1;">
+      <strong>{{ item.product.name }}</strong><br>
+      <small style="color: #6c757d;">Quantity: {{ item.quantity }}</small>
+    </div>
+    <div style="text-align: right; color: #28a745; font-weight: 600;">
+      {{ item.quantity|floatformat:0 }} × {{ item.product_price|currency }}
+    </div>
+  </div>
+  {% endfor %}
+
+  <div style="text-align: right; margin-top: 15px; padding: 15px; background-color: #e8f5e8; border-radius: 8px;">
+    <strong style="font-size: 18px; color: #28a745;">
+      Total: {{ order.total_amount|currency }}
+    </strong>
+  </div>
+</div>
+
+<div style="margin: 30px 0; padding: 20px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px;">
+  <h4 style="color: #155724; margin: 0 0 15px 0;">📋 Delivery Instructions</h4>
+  <ul style="color: #155724; margin: 0; padding-left: 20px;">
+    <li><strong>Be Available:</strong> Someone should be present to receive the package</li>
+    <li><strong>Check Your Phone:</strong> Our delivery partner may call using the provided number</li>
+    <li><strong>Verify Identity:</strong> Have a valid ID ready when receiving the package</li>
+    <li><strong>Inspect Package:</strong> Check the package condition before signing</li>
+    <li><strong>Keep Safe:</strong> Store your herbal products in a cool, dry place</li>
+  </ul>
+</div>
+
+{% if order.tracking_number %}
+<div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">📱 Track Your Package</h4>
+  <p style="color: #856404; margin: 0;">
+    Use your tracking number <strong>{{ order.tracking_number }}</strong> to get real-time updates on your shipment:
+  </p>
+  <div style="text-align: center; margin: 15px 0;">
+    <a href="{{ tracking_url }}"
+      style="display: inline-block; background-color: #28a745; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: 600;">
+      🔍 Track Package Now
+    </a>
+  </div>
+</div>
+{% endif %}
+
+<div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">🤝 Need Assistance?</h4>
+  <p style="margin-bottom: 15px;">
+    Our customer support team is here to help with any questions about your shipment:
+  </p>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div style="flex: 1; min-width: 200px;">
+      <strong>📧 Email Support</strong><br>
+      <a href="mailto:support@jigsimurherbalwonders.com">support@jigsimurherbalwonders.com</a>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <strong>📞 Phone Support</strong><br>
+      <a href="tel:+2348023456789">+234 802 345 6789</a>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <strong>💬 WhatsApp</strong><br>
+      <a href="https://wa.me/2348023456789">Quick Chat Support</a>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <a href="{{ website_url }}/users/orders/{{ order.id }}/" class="btn">
+    📋 View Full Order Details
+  </a>
+  <a href="{{ website_url }}/products/" class="btn btn-secondary">
+    🌿 Explore More Products
+  </a>
+</div>
+
+<p style="margin-top: 30px;">
+  Thank you for choosing JigsimurHerbal. We hope you'll love your natural health products and experience the benefits of
+  our premium herbal solutions.
+</p>
+
+<p style="color: #28a745; font-weight: 600;">
+  Here's to your health and wellness,<br>
+  The JigsimurHerbal Team 🌿
+</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<p style="font-size: 11px; color: #999;">
+  This is a shipping notification for your order. You cannot unsubscribe from order notifications.
+</p>
+{% endblock %}

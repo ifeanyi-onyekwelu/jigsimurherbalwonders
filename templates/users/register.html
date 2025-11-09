@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="min-height: 100vh;">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6">
+      <div class="card shadow border-0 rounded-3">
+        <div class="card-body p-5">
+          <!-- Header -->
+          <div class="text-center mb-5">
+            <div class="mb-3">
+              <i class="fas fa-leaf fa-2x text-success"></i>
+            </div>
+            <h4 class="text-success fw-bold mb-2">Join JigsimurHerbal</h4>
+            <p class="text-muted small">Create your account for natural health solutions</p>
+          </div>
+
+          <!-- Registration Form -->
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            <!-- Name Fields -->
+            <div class="row mb-4">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label small fw-medium mb-2">
+                  First Name
+                </label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in form.first_name.errors %}
+                  <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label small fw-medium mb-2">
+                  Last Name
+                </label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in form.last_name.errors %}
+                  <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Username Field -->
+            <div class="mb-4">
+              <label for="{{ form.username.id_for_label }}" class="form-label small fw-medium mb-2">
+                Username
+              </label>
+              {{ form.username }}
+              {% if form.username.help_text %}
+              <div class="form-text small">{{ form.username.help_text }}</div>
+              {% endif %}
+              {% if form.username.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.username.errors %}
+                <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-4">
+              <label for="{{ form.email.id_for_label }}" class="form-label small fw-medium mb-2">
+                Email Address
+              </label>
+              {{ form.email }}
+              {% if form.email.help_text %}
+              <div class="form-text small">{{ form.email.help_text }}</div>
+              {% endif %}
+              {% if form.email.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.email.errors %}
+                <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Password Fields -->
+            <div class="row mb-4">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="{{ form.password1.id_for_label }}" class="form-label small fw-medium mb-2">
+                  Password
+                </label>
+                <div class="position-relative">
+                  {{ form.password1 }}
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3"
+                    onclick="togglePassword('{{ form.password1.id_for_label }}')"
+                    style="border: none; background: none;">
+                    <i class="fas fa-eye small" id="togglePassword1Icon"></i>
+                  </button>
+                </div>
+                {% if form.password1.help_text %}
+                <div class="form-text small">{{ form.password1.help_text }}</div>
+                {% endif %}
+                {% if form.password1.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in form.password1.errors %}
+                  <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.password2.id_for_label }}" class="form-label small fw-medium mb-2">
+                  Confirm Password
+                </label>
+                <div class="position-relative">
+                  {{ form.password2 }}
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3"
+                    onclick="togglePassword('{{ form.password2.id_for_label }}')"
+                    style="border: none; background: none;">
+                    <i class="fas fa-eye small" id="togglePassword2Icon"></i>
+                  </button>
+                </div>
+                {% if form.password2.help_text %}
+                <div class="form-text small">{{ form.password2.help_text }}</div>
+                {% endif %}
+                {% if form.password2.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in form.password2.errors %}
+                  <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Newsletter Subscription -->
+            <div class="mb-4">
+              <div class="form-check">
+                {{ form.newsletter_subscription }}
+                <label class="form-check-label small" for="{{ form.newsletter_subscription.id_for_label }}">
+                  {{ form.newsletter_subscription.label }}
+                </label>
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="mb-5">
+              <div class="form-check">
+                {{ form.terms_accepted }}
+                <label class="form-check-label small" for="{{ form.terms_accepted.id_for_label }}">
+                  {{ form.terms_accepted.label }}
+                </label>
+              </div>
+              {% if form.terms_accepted.errors %}
+              <div class="text-danger mt-1">
+                {% for error in form.terms_accepted.errors %}
+                <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Register Button -->
+            <div class="d-grid mb-5">
+              <button type="submit" class="btn btn-success py-3">
+                <i class="fas fa-user-plus me-2"></i>Create My Account
+              </button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+              <p class="mb-0 small text-muted">Already have an account?
+                <a href="{% url 'users:login' %}" class="text-success text-decoration-none fw-medium">
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const iconId = fieldId.includes('password1') ? 'togglePassword1Icon' : 'togglePassword2Icon';
+    const toggleIcon = document.getElementById(iconId);
+
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      toggleIcon.classList.remove('fa-eye');
+      toggleIcon.classList.add('fa-eye-slash');
+    } else {
+      passwordField.type = 'password';
+      toggleIcon.classList.remove('fa-eye-slash');
+      toggleIcon.classList.add('fa-eye');
+    }
+  }
+
+  // Password strength indicator
+  document.addEventListener('DOMContentLoaded', function () {
+    const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+
+    if (password1) {
+      password1.addEventListener('input', function () {
+        checkPasswordStrength(this.value);
+        validateField(this);
+      });
+    }
+
+    if (password2) {
+      password2.addEventListener('input', function () {
+        checkPasswordMatch();
+        validateField(this);
+      });
+    }
+
+    function checkPasswordStrength(password) {
+      const strength = calculatePasswordStrength(password);
+      // You can add visual feedback here
+    }
+
+    function checkPasswordMatch() {
+      const match = password1.value === password2.value;
+      password2.classList.toggle('is-valid', match && password2.value !== '');
+      password2.classList.toggle('is-invalid', !match && password2.value !== '');
+    }
+
+    function calculatePasswordStrength(password) {
+      let strength = 0;
+      if (password.length >= 8) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+      return strength;
+    }
+
+    function validateField(field) {
+      const isValid = field.checkValidity();
+      field.classList.toggle('is-valid', isValid && field.value.trim() !== '');
+      field.classList.toggle('is-invalid', !isValid && field.value.trim() !== '');
+    }
+  });
+</script>
+{% endblock %}

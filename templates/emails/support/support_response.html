@@ -1,0 +1,189 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Support Response - Ticket #{{ ticket_number }}{% endblock %}
+
+{% block content %}
+<h2 style="color: #28a745; margin-bottom: 20px;">
+  ✅ We Have a Solution for You!
+</h2>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Hello <strong>{{ user.first_name|default:"Valued Customer" }}</strong>,
+</p>
+
+<p>
+  Great news! Our support team has reviewed your request and we have a solution for you.
+  Thank you for your patience while we worked to resolve your inquiry.
+</p>
+
+<div style="background-color: #e8f5e8; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h3 style="color: #155724; margin: 0 0 15px 0;">
+    🎫 Ticket Update
+  </h3>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px;">
+      <strong>Ticket #:</strong> {{ ticket_number }}<br>
+      <strong>Subject:</strong> {{ subject }}
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px;">
+      <strong>Status:</strong> <span style="color: #28a745; font-weight: 600;">✅ Resolved</span><br>
+      <strong>Resolved:</strong> {{ resolved_at|date:"F d, Y g:i A" }}
+    </div>
+  </div>
+
+  <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; border-left: 4px solid #28a745;">
+    <strong>Handled by:</strong> {{ support_agent|default:"JigsimurHerbal Support Team" }}<br>
+    <strong>Response time:</strong> {{ response_time|default:"Within 24 hours" }}
+  </div>
+</div>
+
+<div style="background-color: #fff; border: 2px solid #28a745; padding: 25px; border-radius: 12px; margin: 30px 0;">
+  <h3 style="color: #28a745; margin: 0 0 20px 0; display: flex; align-items: center;">
+    💡 Our Response
+  </h3>
+
+  <div style="line-height: 1.8; font-size: 15px;">
+    {{ response_message|linebreaks }}
+  </div>
+
+  {% if attachments %}
+  <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+    <strong>📎 Attachments:</strong>
+    <ul style="margin: 10px 0 0 20px;">
+      {% for attachment in attachments %}
+      <li><a href="{{ attachment.url }}" style="color: #28a745;">{{ attachment.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+{% if action_required %}
+<div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">⚡ Action Required</h4>
+  <div style="color: #856404; line-height: 1.6;">
+    {{ action_required|linebreaks }}
+  </div>
+
+  {% if action_buttons %}
+  <div style="text-align: center; margin-top: 20px;">
+    {% for button in action_buttons %}
+    <a href="{{ button.url }}" class="btn" style="margin: 5px; background-color: #ffc107; color: #212529;">
+      {{ button.text }}
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if related_resources %}
+<div style="margin: 30px 0;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">📚 Related Resources</h4>
+  <p>These resources might be helpful for you:</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+    {% for resource in related_resources %}
+    <a href="{{ resource.url }}"
+      style="display: block; padding: 15px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; text-decoration: none; color: #495057; border-left: 4px solid #28a745;">
+      <strong>{{ resource.icon }} {{ resource.title }}</strong><br>
+      <small>{{ resource.description }}</small>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 30px 0;">
+  <h4 style="color: #495057; margin: 0 0 15px 0;">😊 How Did We Do?</h4>
+  <p style="margin-bottom: 15px;">
+    Your feedback helps us improve our support service. Please take a moment to rate your experience:
+  </p>
+
+  <div style="text-align: center; margin: 15px 0;">
+    <div
+      style="display: inline-flex; gap: 10px; background-color: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef;">
+      <a href="{{ website_url }}/support/feedback/{{ ticket_number }}/5/"
+        style="text-decoration: none; font-size: 24px; transition: transform 0.2s;" title="Excellent">⭐</a>
+      <a href="{{ website_url }}/support/feedback/{{ ticket_number }}/4/"
+        style="text-decoration: none; font-size: 24px; transition: transform 0.2s;" title="Good">⭐</a>
+      <a href="{{ website_url }}/support/feedback/{{ ticket_number }}/3/"
+        style="text-decoration: none; font-size: 24px; transition: transform 0.2s;" title="Average">⭐</a>
+      <a href="{{ website_url }}/support/feedback/{{ ticket_number }}/2/"
+        style="text-decoration: none; font-size: 24px; transition: transform 0.2s;" title="Below Average">⭐</a>
+      <a href="{{ website_url }}/support/feedback/{{ ticket_number }}/1/"
+        style="text-decoration: none; font-size: 24px; transition: transform 0.2s;" title="Poor">⭐</a>
+    </div>
+    <br>
+    <small style="color: #6c757d;">Click on the stars to rate your experience</small>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="{{ website_url }}/support/feedback/{{ ticket_number }}/" class="btn btn-secondary">
+      💬 Leave Detailed Feedback
+    </a>
+  </div>
+</div>
+
+<div style="margin: 30px 0; padding: 20px; background-color: #e8f4f8; border: 1px solid #bee5eb; border-radius: 8px;">
+  <h4 style="color: #0c5460; margin: 0 0 15px 0;">🤝 Still Need Help?</h4>
+  <p style="margin-bottom: 15px;">
+    If this doesn't completely solve your issue or you have follow-up questions:
+  </p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>📧 Reply to Ticket</strong><br>
+      <a href="mailto:support@jigsimurherbalwonders.com?subject=Re: Ticket {{ ticket_number }}"
+        style="color: #17a2b8;">Reply to this email</a>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>🆕 New Ticket</strong><br>
+      <a href="{{ website_url }}/support/new/" style="color: #17a2b8;">Submit new request</a>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>💬 Live Chat</strong><br>
+      <a href="https://wa.me/2348023456789" style="color: #25D366;">WhatsApp Support</a>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>📞 Call Us</strong><br>
+      <a href="tel:+2348023456789" style="color: #28a745;">+234 802 345 6789</a>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <a href="{{ website_url }}/support/tickets/" class="btn">
+    🎫 View All Tickets
+  </a>
+  <a href="{{ website_url }}/" class="btn btn-secondary">
+    🏠 Back to Homepage
+  </a>
+</div>
+
+<div
+  style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; margin: 30px 0; text-align: center;">
+  <h4 style="color: #155724; margin: 0 0 15px 0;">🙏 Thank You!</h4>
+  <p style="color: #155724; margin: 0;">
+    We appreciate your business and the opportunity to serve you.
+    Your satisfaction is our priority, and we're here whenever you need us.
+  </p>
+</div>
+
+<p style="margin-top: 30px;">
+  Thank you for choosing JigsimurHerbal. We're committed to providing you with exceptional products and support.
+</p>
+
+<p style="color: #28a745; font-weight: 600;">
+  Best wishes for your health and wellness,<br>
+  The JigsimurHerbal Support Team 🌿
+</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<p style="font-size: 11px; color: #999;">
+  This is a support response. You cannot unsubscribe from support communications.
+  <a href="{{ website_url }}/support/tickets/{{ ticket_number }}/" style="color: #28a745;">Manage this ticket</a>
+</p>
+{% endblock %}

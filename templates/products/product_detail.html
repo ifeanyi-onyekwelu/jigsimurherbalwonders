@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load currency_filters %}
+
+{% block title %}{{ product.name }} - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Products</a></li>
+      <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+      <li class="breadcrumb-item active">{{ product.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Product Images -->
+    <div class="col-lg-6 mb-4">
+      <div class="product-gallery">
+        <div class="main-image mb-3">
+          {% if product.image %}
+          <img src="{{ product.image.url }}" class="img-fluid rounded shadow" alt="{{ product.name }}" id="mainImage">
+          {% else %}
+          <img src="https://via.placeholder.com/600x400/28a745/ffffff?text={{ product.name|truncatewords:3|urlencode }}"
+            class="img-fluid rounded shadow" alt="{{ product.name }}" id="mainImage">
+          {% endif %}
+        </div>
+        {% if product.images.all %}
+        <div class="row">
+          {% for image in product.images.all %}
+          <div class="col-3 mb-2">
+            {% if image.image %}
+            <img src="{{ image.image.url }}" class="img-fluid rounded cursor-pointer thumbnail"
+              alt="{{ image.alt_text }}" onclick="changeMainImage(this.src)">
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-lg-6">
+      <div class="product-details">
+        <h1 class="display-5 fw-bold text-success mb-3">{{ product.name }}</h1>
+
+        {% if product.is_on_sale %}
+        <div class="mb-2">
+          <span class="badge bg-danger fs-6">{{ product.discount_percentage }}% OFF</span>
+        </div>
+        {% endif %}
+
+        <div class="price mb-3">
+          <span class="h3 text-success fw-bold">{{ product.price|currency }}</span>
+          {% if product.original_price %}
+          <span class="h5 text-muted text-decoration-line-through ms-2">{{ product.original_price|currency }}</span>
+          {% endif %}
+        </div>
+
+        <div class="availability mb-3">
+          {% if product.is_in_stock %}
+          <span class="badge bg-success">
+            <i class="fas fa-check-circle me-1"></i>{{ product.stock_quantity }} in stock
+          </span>
+          {% else %}
+          <span class="badge bg-danger">
+            <i class="fas fa-times-circle me-1"></i>Out of stock
+          </span>
+          {% endif %}
+        </div>
+
+        <p class="lead mb-4">{{ product.short_description }}</p>
+
+        {% if product.is_in_stock %}
+        <form method="post" action="{% url 'orders:add_to_cart' product.id %}" class="mb-4">
+          {% csrf_token %}
+          <div class="row align-items-end">
+            <div class="col-auto">
+              <label class="form-label">Quantity:</label>
+              <select name="quantity" class="form-select">
+                {% for i in "12345"|make_list %}
+                {% if i|add:0 <= product.stock_quantity %} <option value="{{ i }}">{{ i }}</option>
+                  {% endif %}
+                  {% endfor %}
+              </select>
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-success btn-lg">
+                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+              </button>
+            </div>
+          </div>
+        </form>
+        {% endif %}
+
+        <!-- Product Specifications -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h6 class="mb-0">Product Information</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-6 mb-2">
+                <strong>Category:</strong> {{ product.category.name }}
+              </div>
+              {% if product.weight %}
+              <div class="col-sm-6 mb-2">
+                <strong>Weight:</strong> {{ product.weight }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Tabs -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <ul class="nav nav-tabs" id="productTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description"
+            type="button">Description</button>
+        </li>
+        {% if product.ingredients %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="ingredients-tab" data-bs-toggle="tab" data-bs-target="#ingredients"
+            type="button">Ingredients</button>
+        </li>
+        {% endif %}
+        {% if product.usage_instructions %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="usage-tab" data-bs-toggle="tab" data-bs-target="#usage"
+            type="button">Usage</button>
+        </li>
+        {% endif %}
+        {% if product.benefits %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="benefits-tab" data-bs-toggle="tab" data-bs-target="#benefits"
+            type="button">Benefits</button>
+        </li>
+        {% endif %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button">
+            Reviews ({{ reviews.count }})
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content mt-3" id="productTabsContent">
+        <!-- Description Tab -->
+        <div class="tab-pane fade show active" id="description">
+          <div class="card">
+            <div class="card-body">
+              {{ product.description|linebreaks }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingredients Tab -->
+        {% if product.ingredients %}
+        <div class="tab-pane fade" id="ingredients">
+          <div class="card">
+            <div class="card-body">
+              {{ product.ingredients|linebreaks }}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Usage Tab -->
+        {% if product.usage_instructions %}
+        <div class="tab-pane fade" id="usage">
+          <div class="card">
+            <div class="card-body">
+              {{ product.usage_instructions|linebreaks }}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Benefits Tab -->
+        {% if product.benefits %}
+        <div class="tab-pane fade" id="benefits">
+          <div class="card">
+            <div class="card-body">
+              {{ product.benefits|linebreaks }}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Reviews Tab -->
+        <div class="tab-pane fade" id="reviews">
+          <div class="card">
+            <div class="card-body">
+              {% if reviews %}
+              {% for review in reviews %}
+              <div class="review-item border-bottom pb-3 mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <h6 class="mb-1">{{ review.title }}</h6>
+                    <div class="rating mb-1">
+                      {% for i in "12345"|make_list %}
+                      {% if i|add:0 <= review.rating %} <i class="fas fa-star text-warning"></i>
+                        {% else %}
+                        <i class="far fa-star text-muted"></i>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">
+                      by {{ review.user.get_full_name|default:review.user.username }}
+                      on {{ review.created_at|date:"M d, Y" }}
+                    </small>
+                  </div>
+                </div>
+                <p class="mb-0">{{ review.comment }}</p>
+              </div>
+              {% endfor %}
+              {% else %}
+              <p class="text-muted text-center py-4">No reviews yet. Be the first to review this product!</p>
+              {% endif %}
+
+              {% if user.is_authenticated and not user_has_reviewed %}
+              <div class="mt-4">
+                <h6>Write a Review</h6>
+                <form method="post" action="{% url 'products:add_review' product.slug %}">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    {{ review_form.rating.label_tag }}
+                    {{ review_form.rating }}
+                  </div>
+                  <div class="mb-3">
+                    {{ review_form.title.label_tag }}
+                    {{ review_form.title }}
+                  </div>
+                  <div class="mb-3">
+                    {{ review_form.comment.label_tag }}
+                    {{ review_form.comment }}
+                  </div>
+                  <button type="submit" class="btn btn-success">Submit Review</button>
+                </form>
+              </div>
+              {% elif user.is_authenticated and user_has_reviewed %}
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                You have already reviewed this product.
+              </div>
+              {% else %}
+              <div class="alert alert-info">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Please <a href="{% url 'users:login' %}">login</a> to write a review.
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  {% if related_products %}
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="fw-bold text-success mb-4">Related Products</h3>
+      <div class="row">
+        {% for related in related_products %}
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card h-100 shadow-sm">
+            {% if related.image %}
+            <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}"
+              style="height: 200px; object-fit: cover;">
+            {% else %}
+            <img
+              src="https://via.placeholder.com/300x200/28a745/ffffff?text={{ related.name|truncatewords:2|urlencode }}"
+              class="card-img-top" alt="{{ related.name }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              <h6 class="card-title">{{ related.name }}</h6>
+              <p class="card-text text-muted small flex-grow-1">
+                {{ related.short_description|truncatewords:10 }}
+              </p>
+              <div class="mt-auto">
+                <div class="price mb-2">
+                  <span class="fw-bold text-success">{{ related.price|currency }}</span>
+                </div>
+                <a href="{{ related.get_absolute_url }}" class="btn btn-outline-success btn-sm w-100">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .thumbnail {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .thumbnail:hover {
+    transform: scale(1.05);
+  }
+
+  .rating i {
+    font-size: 0.9rem;
+  }
+
+  #mainImage {
+    max-height: 500px;
+    object-fit: cover;
+  }
+</style>
+
+<script>
+  function changeMainImage(src) {
+    document.getElementById('mainImage').src = src;
+  }
+</script>
+{% endblock %}

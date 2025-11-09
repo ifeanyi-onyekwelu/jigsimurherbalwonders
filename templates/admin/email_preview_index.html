@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} - JigsimurHerbal Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .preview-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .preview-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-header {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .email-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Header -->
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+          <div>
+            <h1 class="h3 text-success">📧 {{ title }}</h1>
+            <p class="text-muted mb-0">Preview and test all email templates for JigsimurHerbal</p>
+          </div>
+          <div>
+            <a href="/admin/" class="btn btn-outline-success">🏠 Back to Admin</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      {% for category, templates in email_templates.items %}
+      <div class="col-12 mb-5">
+        <div class="category-header">
+          <h2 class="h4 mb-0">
+            {% if 'Order' in category %}📦{% elif 'Support' in category %}🤝{% elif 'Newsletter' in category %}📧{%
+            endif %}
+            {{ category }}
+          </h2>
+          <small>{{ templates|length }} template{{ templates|length|pluralize }}</small>
+        </div>
+
+        <div class="row">
+          {% for template in templates %}
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card preview-card h-100 border-0 shadow-sm">
+              <div class="card-body text-center">
+                <div class="email-icon">
+                  {% if 'Confirmation' in template.name %}
+                  ✅
+                  {% elif 'Payment' in template.name %}
+                  💳
+                  {% elif 'Shipped' in template.name %}
+                  🚚
+                  {% elif 'Delivered' in template.name %}
+                  📦
+                  {% elif 'Support Request' in template.name %}
+                  📧
+                  {% elif 'Support Response' in template.name %}
+                  ✅
+                  {% elif 'Welcome' in template.name %}
+                  🌟
+                  {% else %}
+                  📄
+                  {% endif %}
+                </div>
+                <h5 class="card-title text-dark">{{ template.name }}</h5>
+                <p class="card-text text-muted small mb-3">
+                  {% if 'Confirmation' in template.name %}
+                  Sent immediately after order placement
+                  {% elif 'Payment' in template.name %}
+                  Triggered when payment is confirmed
+                  {% elif 'Shipped' in template.name %}
+                  Sent when order is dispatched
+                  {% elif 'Delivered' in template.name %}
+                  Sent upon successful delivery
+                  {% elif 'Support Request' in template.name %}
+                  Auto-response for support tickets
+                  {% elif 'Support Response' in template.name %}
+                  Sent when support provides solution
+                  {% elif 'Welcome' in template.name %}
+                  Welcome email for new subscribers
+                  {% else %}
+                  Email template preview
+                  {% endif %}
+                </p>
+                <div class="d-grid gap-2">
+                  <a href="{% url template.url %}" target="_blank" class="btn btn-success btn-sm">
+                    👁️ Preview Template
+                  </a>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="copyUrl('{% url template.url %}')">
+                    📋 Copy URL
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">🛠️ Email Testing Tools</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="d-grid">
+                  <a href="/admin/orders/order/" class="btn btn-outline-primary">
+                    📋 View Orders
+                  </a>
+                </div>
+                <small class="text-muted">Manage real orders and trigger emails</small>
+              </div>
+              <div class="col-md-4">
+                <div class="d-grid">
+                  <a href="/test-email/" class="btn btn-outline-success" target="_blank">
+                    ✉️ Test Email Sending
+                  </a>
+                </div>
+                <small class="text-muted">Test actual email delivery</small>
+              </div>
+              <div class="col-md-4">
+                <div class="d-grid">
+                  <a href="/admin/auth/user/" class="btn btn-outline-info">
+                    👥 Manage Users
+                  </a>
+                </div>
+                <small class="text-muted">User management and email preferences</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="row mt-4 mb-5">
+      <div class="col-12">
+        <div class="alert alert-info border-0">
+          <h5 class="alert-heading">💡 Preview Tips</h5>
+          <ul class="mb-0">
+            <li><strong>All templates</strong> use sample data for preview purposes</li>
+            <li><strong>Email styling</strong> is optimized for mobile and desktop clients</li>
+            <li><strong>Live testing</strong> should be done with the test email functionality</li>
+            <li><strong>Templates are responsive</strong> and work across all major email clients</li>
+            <li><strong>Currency formatting</strong> uses the custom Django filter for proper display</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function copyUrl(url) {
+      const fullUrl = window.location.origin + url;
+      navigator.clipboard.writeText(fullUrl).then(function () {
+        // Show success feedback
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-success');
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('btn-success');
+          btn.classList.add('btn-outline-secondary');
+        }, 2000);
+      }).catch(function (err) {
+        console.error('Could not copy text: ', err);
+        alert('URL copied to clipboard: ' + fullUrl);
+      });
+    }
+
+    // Add hover effects and animations
+    document.addEventListener('DOMContentLoaded', function () {
+      const cards = document.querySelectorAll('.preview-card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', function () {
+          this.style.transform = 'translateY(-5px)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

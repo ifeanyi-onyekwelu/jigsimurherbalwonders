@@ -1,0 +1,150 @@
+{% extends 'emails/base_email.html' %}
+{% load currency_filters %}
+
+{% block title %}Order Confirmation #{{ order.order_number }} - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<h2 style="color: #28a745; margin-bottom: 20px;">
+  🎉 Order Confirmed!
+</h2>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Dear <strong>{{ order.billing_first_name }} {{ order.billing_last_name }}</strong>,
+</p>
+
+<p>
+  Thank you for your order! We're excited to help you on your natural health journey.
+  Your order has been received and is being processed.
+</p>
+
+<div class="order-summary">
+  <h3 style="margin: 0 0 15px 0; color: #28a745;">
+    📦 Order Details
+  </h3>
+
+  <div style="margin-bottom: 15px;">
+    <strong>Order Number:</strong> #{{ order.order_number }}<br>
+    <strong>Order Date:</strong> {{ order.created_at|date:"F d, Y g:i A" }}<br>
+    <strong>Payment Method:</strong> {{ order.get_payment_method_display }}
+  </div>
+
+  <h4 style="margin: 20px 0 10px 0;">Items Ordered:</h4>
+
+  {% for item in order.items.all %}
+  <div class="order-item">
+    <div>
+      <strong>{{ item.product.name }}</strong><br>
+      <small style="color: #6c757d;">Quantity: {{ item.quantity }} × {{ item.product_price|currency }}</small>
+    </div>
+    <div style="font-weight: 600;">
+      {{ item.quantity|floatformat:0 }} × {{ item.product_price|currency }} = {{ item.total_price|currency }}
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="order-item total-row">
+    <div>Subtotal:</div>
+    <div>{{ order.subtotal|currency }}</div>
+  </div>
+
+  <div class="order-item">
+    <div>Shipping:</div>
+    <div>{{ order.shipping_cost|currency }}</div>
+  </div>
+
+  {% if order.tax_amount > 0 %}
+  <div class="order-item">
+    <div>Tax:</div>
+    <div>{{ order.tax_amount|currency }}</div>
+  </div>
+  {% endif %}
+
+  <div class="order-item total-row" style="border-top: 2px solid #28a745; padding-top: 15px; font-size: 18px;">
+    <div>Total Amount:</div>
+    <div>{{ order.total_amount|currency }}</div>
+  </div>
+</div>
+
+{% if order.payment_method == 'bank_transfer' %}
+<div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">💳 Payment Instructions</h4>
+  <p style="color: #856404; margin-bottom: 15px;">
+    Please complete your payment by transferring <strong>{{ order.total_amount|currency }}</strong> to our bank account:
+  </p>
+
+  <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+    <strong>Bank Details:</strong><br>
+    Bank Name: First Bank of Nigeria<br>
+    Account Name: JigsimurHerbal Limited<br>
+    Account Number: <strong>3085436290</strong><br>
+    Reference: <strong>{{ order.order_number }}</strong>
+  </div>
+
+  <p style="color: #856404;">
+    After making the payment, please send proof of payment to:
+    <a href="mailto:orders@jigsimurherbalwonders.com?subject=Payment Proof - Order {{ order.order_number }}">
+      orders@jigsimurherbalwonders.com
+    </a>
+  </p>
+</div>
+{% endif %}
+
+<div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">📍 Shipping Address</h4>
+  <address style="font-style: normal; line-height: 1.6;">
+    {{ order.shipping_first_name }} {{ order.shipping_last_name }}<br>
+    {% if order.shipping_company %}{{ order.shipping_company }}<br>{% endif %}
+    {{ order.shipping_address_line_1 }}<br>
+    {% if order.shipping_address_line_2 %}{{ order.shipping_address_line_2 }}<br>{% endif %}
+    {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}<br>
+    {{ order.shipping_country }}
+    {% if order.shipping_phone %}<br>Phone: {{ order.shipping_phone }}{% endif %}
+  </address>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <a href="{{ website_url }}/users/orders/{{ order.id }}/" class="btn">
+    📋 View Order Details
+  </a>
+  <a href="{{ website_url }}/products/" class="btn btn-secondary">
+    🛍️ Continue Shopping
+  </a>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">🤝 What's Next?</h4>
+  <ul style="padding-left: 20px; margin: 0;">
+    {% if order.payment_method == 'bank_transfer' %}
+    <li>Complete your payment using the bank details above</li>
+    <li>Send payment proof to orders@jigsimurherbalwonders.com</li>
+    <li>We'll process your order within 2-4 hours after payment confirmation</li>
+    {% elif order.payment_method == 'paystack' %}
+    <li>Your payment has been processed successfully</li>
+    <li>We'll prepare your order for shipping within 24 hours</li>
+    {% else %}
+    <li>We'll prepare your order for shipping</li>
+    {% endif %}
+    <li>You'll receive tracking information once shipped</li>
+    <li>Expect delivery within 3-7 business days</li>
+  </ul>
+</div>
+
+<p style="margin-top: 30px;">
+  If you have any questions about your order, please don't hesitate to contact our customer support team at
+  <a href="mailto:support@jigsimurherbalwonders.com">support@jigsimurherbalwonders.com</a>.
+</p>
+
+<p style="margin-bottom: 0;">
+  Thank you for choosing JigsimurHerbal for your natural health needs!
+</p>
+
+<p style="color: #28a745; font-weight: 600;">
+  The JigsimurHerbal Team 🌿
+</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<p style="font-size: 11px; color: #999;">
+  This is a transactional email for your order. You cannot unsubscribe from order notifications.
+</p>
+{% endblock %}

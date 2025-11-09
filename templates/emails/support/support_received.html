@@ -1,0 +1,137 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Support Request Received - Ticket #{{ ticket_number }}{% endblock %}
+
+{% block content %}
+<h2 style="color: #17a2b8; margin-bottom: 20px;">
+  📧 We've Received Your Support Request
+</h2>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Hello <strong>{{ user.first_name|default:"Valued Customer" }}</strong>,
+</p>
+
+<p>
+  Thank you for contacting JigsimurHerbal support. We've received your message and our team is reviewing it.
+  We're committed to providing you with the best possible assistance.
+</p>
+
+<div style="background-color: #e8f4f8; border: 1px solid #bee5eb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h3 style="color: #0c5460; margin: 0 0 15px 0;">
+    🎫 Support Ticket Details
+  </h3>
+
+  <div style="background-color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+    <strong>Ticket Number:</strong> #{{ ticket_number }}<br>
+    <strong>Subject:</strong> {{ subject }}<br>
+    <strong>Priority:</strong> {{ priority|default:"Normal" }}<br>
+    <strong>Created:</strong> {{ created_at|date:"F d, Y g:i A" }}<br>
+    <strong>Status:</strong> <span style="color: #17a2b8; font-weight: 600;">Under Review</span>
+  </div>
+
+  <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #17a2b8;">
+    <strong>Your Message:</strong><br>
+    <div style="margin-top: 10px; line-height: 1.6;">
+      {{ message|linebreaks }}
+    </div>
+  </div>
+</div>
+
+<div style="margin: 30px 0; padding: 20px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px;">
+  <h4 style="color: #155724; margin: 0 0 15px 0;">⏱️ What Happens Next?</h4>
+  <ul style="color: #155724; margin: 0; padding-left: 20px;">
+    <li><strong>Review:</strong> Our support team is analyzing your request (within 2 hours)</li>
+    <li><strong>Research:</strong> We'll investigate and prepare a comprehensive response</li>
+    <li><strong>Response:</strong> You'll receive a detailed reply within 24 hours</li>
+    <li><strong>Follow-up:</strong> We'll ensure your issue is completely resolved</li>
+  </ul>
+</div>
+
+<div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">📞 Need Immediate Assistance?</h4>
+  <p style="color: #856404; margin-bottom: 15px;">
+    For urgent matters that require immediate attention, you can reach us through:
+  </p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>📞 Phone Support</strong><br>
+      <a href="tel:+2348023456789" style="color: #28a745;">+234 802 345 6789</a><br>
+      <small>Mon-Fri: 9AM-6PM</small>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>💬 WhatsApp</strong><br>
+      <a href="https://wa.me/2348023456789" style="color: #25D366;">Live Chat Support</a><br>
+      <small>Available 24/7</small>
+    </div>
+    <div style="background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;">
+      <strong>📧 Priority Email</strong><br>
+      <a href="mailto:urgent@jigsimurherbalwonders.com" style="color: #dc3545;">urgent@jigsimurherbalwonders.com</a><br>
+      <small>For urgent issues</small>
+    </div>
+  </div>
+</div>
+
+<div style="margin: 30px 0;">
+  <h4 style="color: #17a2b8; margin: 0 0 15px 0;">💡 Common Solutions</h4>
+  <p>While you wait, here are some resources that might help:</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+    <a href="{{ website_url }}/help/faq/"
+      style="display: block; padding: 15px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; text-decoration: none; color: #495057; transition: all 0.3s;">
+      <strong>❓ FAQ Section</strong><br>
+      <small>Quick answers to common questions</small>
+    </a>
+    <a href="{{ website_url }}/help/shipping/"
+      style="display: block; padding: 15px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; text-decoration: none; color: #495057;">
+      <strong>📦 Shipping Guide</strong><br>
+      <small>Delivery times and tracking info</small>
+    </a>
+    <a href="{{ website_url }}/help/products/"
+      style="display: block; padding: 15px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; text-decoration: none; color: #495057;">
+      <strong>🌿 Product Guide</strong><br>
+      <small>Usage instructions and tips</small>
+    </a>
+    <a href="{{ website_url }}/help/returns/"
+      style="display: block; padding: 15px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; text-decoration: none; color: #495057;">
+      <strong>↩️ Returns & Refunds</strong><br>
+      <small>Our return policy explained</small>
+    </a>
+  </div>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <a href="{{ website_url }}/support/tickets/{{ ticket_number }}/" class="btn">
+    🎫 View Ticket Status
+  </a>
+  <a href="{{ website_url }}/support/new/" class="btn btn-secondary">
+    ➕ Submit Another Request
+  </a>
+</div>
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 30px 0;">
+  <h4 style="color: #495057; margin: 0 0 15px 0;">🔒 Privacy & Security</h4>
+  <p style="margin: 0; font-size: 14px; line-height: 1.6;">
+    Your support request and personal information are kept strictly confidential.
+    We only use this information to provide you with the best possible support experience.
+    Your ticket is secured with encryption and access is limited to authorized support staff only.
+  </p>
+</div>
+
+<p style="margin-top: 30px;">
+  We appreciate your patience and look forward to resolving your inquiry quickly.
+  Our goal is to exceed your expectations with every interaction.
+</p>
+
+<p style="color: #17a2b8; font-weight: 600;">
+  Best regards,<br>
+  JigsimurHerbal Support Team 🌿
+</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<p style="font-size: 11px; color: #999;">
+  This is a support notification. You cannot unsubscribe from support communications.
+  <a href="{{ website_url }}/support/tickets/{{ ticket_number }}/" style="color: #17a2b8;">Manage this ticket</a>
+</p>
+{% endblock %}

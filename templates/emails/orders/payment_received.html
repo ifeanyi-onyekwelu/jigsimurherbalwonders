@@ -1,0 +1,122 @@
+{% extends 'emails/base_email.html' %}
+{% load currency_filters %}
+
+{% block title %}Payment Received - Order #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<h2 style="color: #28a745; margin-bottom: 20px;">
+  ✅ Payment Confirmed!
+</h2>
+
+<p style="font-size: 16px; margin-bottom: 20px;">
+  Dear <strong>{{ order.billing_first_name }} {{ order.billing_last_name }}</strong>,
+</p>
+
+<p>
+  Great news! We've received and confirmed your payment for order #{{ order.order_number }}.
+  Your order is now being prepared for shipment.
+</p>
+
+<div class="order-summary">
+  <h3 style="margin: 0 0 15px 0; color: #28a745;">
+    💰 Payment Details
+  </h3>
+
+  <div style="margin-bottom: 15px;">
+    <strong>Order Number:</strong> #{{ order.order_number }}<br>
+    <strong>Payment Date:</strong> {{ order.payment_confirmed_at|date:"F d, Y g:i A" }}<br>
+    <strong>Payment Method:</strong> {{ order.get_payment_method_display }}<br>
+    <strong>Amount Paid:</strong> <span style="color: #28a745; font-weight: 600; font-size: 18px;">{{
+      order.total_amount|currency }}</span>
+  </div>
+
+  {% if order.payment_reference %}
+  <div style="background-color: #e8f5e8; padding: 15px; border-radius: 5px; margin: 15px 0;">
+    <strong>Payment Reference:</strong> {{ order.payment_reference }}
+  </div>
+  {% endif %}
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px;">
+    <h3 style="color: #155724; margin: 0 0 10px 0;">🚚 Order Status Updated</h3>
+    <p style="color: #155724; margin: 0; font-size: 16px;">
+      <strong>Status:</strong> Payment Confirmed - Preparing for Shipment
+    </p>
+  </div>
+</div>
+
+<div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">📦 What Happens Next?</h4>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div style="flex: 1; min-width: 250px;">
+      <div style="padding: 15px; background-color: #fff; border-radius: 5px; border-left: 4px solid #28a745;">
+        <h5 style="margin: 0 0 10px 0; color: #28a745;">⏳ Step 1: Processing</h5>
+        <p style="margin: 0; font-size: 14px;">We're carefully preparing your herbal products (2-4 hours)</p>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 250px;">
+      <div style="padding: 15px; background-color: #fff; border-radius: 5px; border-left: 4px solid #ffc107;">
+        <h5 style="margin: 0 0 10px 0; color: #ffc107;">📮 Step 2: Shipping</h5>
+        <p style="margin: 0; font-size: 14px;">Your order will be shipped within 24 hours</p>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 250px;">
+      <div style="padding: 15px; background-color: #fff; border-radius: 5px; border-left: 4px solid #17a2b8;">
+        <h5 style="margin: 0 0 10px 0; color: #17a2b8;">🎯 Step 3: Delivery</h5>
+        <p style="margin: 0; font-size: 14px;">Delivered to you within 3-7 business days</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+  <h4 style="color: #28a745; margin: 0 0 15px 0;">📍 Shipping To:</h4>
+  <address style="font-style: normal; line-height: 1.6;">
+    {{ order.shipping_first_name }} {{ order.shipping_last_name }}<br>
+    {% if order.shipping_company %}{{ order.shipping_company }}<br>{% endif %}
+    {{ order.shipping_address_line_1 }}<br>
+    {% if order.shipping_address_line_2 %}{{ order.shipping_address_line_2 }}<br>{% endif %}
+    {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}<br>
+    {{ order.shipping_country }}
+    {% if order.shipping_phone %}<br>Phone: {{ order.shipping_phone }}{% endif %}
+  </address>
+</div>
+
+<div style="text-align: center; margin: 30px 0;">
+  <a href="{{ website_url }}/users/orders/{{ order.id }}/" class="btn">
+    📋 Track Your Order
+  </a>
+  <a href="{{ website_url }}/products/" class="btn btn-secondary">
+    🛍️ Shop More Products
+  </a>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+  <h4 style="color: #856404; margin: 0 0 15px 0;">📞 Need Help?</h4>
+  <p style="color: #856404; margin: 0;">
+    If you have any questions or concerns about your order, our customer support team is here to help:
+  </p>
+  <ul style="color: #856404; margin: 10px 0 0 20px;">
+    <li>Email: <a href="mailto:support@jigsimurherbalwonders.com">support@jigsimurherbalwonders.com</a></li>
+    <li>WhatsApp: <a href="https://wa.me/2348023456789">+234 802 345 6789</a></li>
+    <li>Call: <a href="tel:+2348023456789">+234 802 345 6789</a></li>
+  </ul>
+</div>
+
+<p style="margin-top: 30px;">
+  Thank you for your trust in JigsimurHerbal. We're committed to providing you with the highest quality natural health
+  products.
+</p>
+
+<p style="color: #28a745; font-weight: 600;">
+  Wishing you vibrant health,<br>
+  The JigsimurHerbal Team 🌿
+</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<p style="font-size: 11px; color: #999;">
+  This is a transactional email for your order. You cannot unsubscribe from order notifications.
+</p>
+{% endblock %}
