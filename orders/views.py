@@ -198,6 +198,33 @@ def checkout(request):
             # Clear cart
             cart_items.delete()
 
+            # Send order confirmation email
+            try:
+                from jigsimurherbal.email_utils import EmailService
+                from django.template.loader import render_to_string
+                from django.utils.html import strip_tags
+
+                html_message = render_to_string(
+                    "emails/orders/order_confirmation.html",
+                    {
+                        "order": order,
+                        "website_url": settings.SITE_URL,
+                    },
+                )
+                plain_message = strip_tags(html_message)
+
+                EmailService.send_order_notification(
+                    subject=f"Order Confirmation - #{order.order_number}",
+                    message=plain_message,
+                    recipient_list=[request.user.email],
+                    html_message=html_message,
+                )
+            except Exception as e:
+                # Log error but don't fail the order
+                import logging
+
+                logging.error(f"Failed to send order confirmation email: {str(e)}")
+
             messages.success(
                 request, f"Order {order.order_number} placed successfully!"
             )

@@ -67,8 +67,8 @@ def create_user_profile(sender, instance, created, **kwargs):
     """Create user profile when user is created"""
     if created:
         UserProfile.objects.create(user=instance)
-        # Send welcome email to new user
-        send_welcome_email(instance)
+        # Welcome email disabled - no signup/login emails needed
+        # send_welcome_email(instance)
 
 
 @receiver(post_save, sender=User)

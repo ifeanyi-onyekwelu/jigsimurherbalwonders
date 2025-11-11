@@ -267,20 +267,90 @@ class OrderAdmin(admin.ModelAdmin):
 
     def mark_as_shipped(self, request, queryset):
         from django.utils import timezone
+        from jigsimurherbal.email_utils import EmailService
+        from django.template.loader import render_to_string
+        from django.utils.html import strip_tags
+        from django.conf import settings
 
-        queryset.update(status="shipped", shipped_at=timezone.now())
+        count = 0
+        for order in queryset:
+            order.status = "shipped"
+            order.shipped_at = timezone.now()
+            order.save()
+
+            # Send shipped notification email
+            try:
+                html_message = render_to_string(
+                    "emails/orders/order_shipped.html",
+                    {
+                        "order": order,
+                        "website_url": settings.SITE_URL,
+                    },
+                )
+                plain_message = strip_tags(html_message)
+
+                EmailService.send_order_notification(
+                    subject=f"Your Order #{order.order_number} Has Been Shipped! 📦",
+                    message=plain_message,
+                    recipient_list=[order.user.email],
+                    html_message=html_message,
+                )
+            except Exception as e:
+                import logging
+
+                logging.error(
+                    f"Failed to send shipped email for order {order.order_number}: {str(e)}"
+                )
+
+            count += 1
+
         self.message_user(
-            request, "{} orders marked as shipped.".format(queryset.count())
+            request, "{} orders marked as shipped and emails sent.".format(count)
         )
 
     mark_as_shipped.short_description = "Mark as Shipped"
 
     def mark_as_delivered(self, request, queryset):
         from django.utils import timezone
+        from jigsimurherbal.email_utils import EmailService
+        from django.template.loader import render_to_string
+        from django.utils.html import strip_tags
+        from django.conf import settings
 
-        queryset.update(status="delivered", delivered_at=timezone.now())
+        count = 0
+        for order in queryset:
+            order.status = "delivered"
+            order.delivered_at = timezone.now()
+            order.save()
+
+            # Send delivered notification email
+            try:
+                html_message = render_to_string(
+                    "emails/orders/order_delivered.html",
+                    {
+                        "order": order,
+                        "website_url": settings.SITE_URL,
+                    },
+                )
+                plain_message = strip_tags(html_message)
+
+                EmailService.send_order_notification(
+                    subject=f"Your Order #{order.order_number} Has Been Delivered! ✅",
+                    message=plain_message,
+                    recipient_list=[order.user.email],
+                    html_message=html_message,
+                )
+            except Exception as e:
+                import logging
+
+                logging.error(
+                    f"Failed to send delivered email for order {order.order_number}: {str(e)}"
+                )
+
+            count += 1
+
         self.message_user(
-            request, "{} orders marked as delivered.".format(queryset.count())
+            request, "{} orders marked as delivered and emails sent.".format(count)
         )
 
     mark_as_delivered.short_description = "Mark as Delivered"

@@ -41,12 +41,11 @@ def register(request):
             username = form.cleaned_data.get("username")
             first_name = user.first_name or username
 
-            # Success message with email notification
+            # Success message without email notification
             messages.success(
                 request,
                 f"Welcome to JigsimurHerbal, {first_name}! 🌿 "
-                f"Your account has been created successfully. "
-                f"Check your email for a welcome message with your special discount!",
+                f"Your account has been created successfully. You can now log in.",
             )
             return redirect("users:login")
     else:

@@ -1,0 +1,12 @@
+# Static files handling
+RewriteEngine On
+RewriteBase /
+
+# Serve static files directly
+RewriteRule ^(static/.*)$ - [L]
+RewriteRule ^(media/.*)$ - [L]
+
+# Pass everything else to Passenger
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ passenger_wsgi.py/$1 [QSA,L]
