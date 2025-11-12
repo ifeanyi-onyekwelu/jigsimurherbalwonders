@@ -173,3 +173,37 @@ def search_suggestions(request):
         ]
 
     return JsonResponse({"suggestions": suggestions})
+
+
+def about(request):
+    """About Us page"""
+    return render(request, "products/about.html")
+
+
+def contact(request):
+    """Contact Us page"""
+    if request.method == "POST":
+        # Handle contact form submission
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+
+        # TODO: Send email or save to database
+        messages.success(
+            request,
+            "Thank you for contacting us! We'll get back to you as soon as possible.",
+        )
+        return redirect("products:contact")
+
+    return render(request, "products/contact.html")
+
+
+def privacy_policy(request):
+    """Privacy Policy page"""
+    return render(request, "products/privacy_policy.html")
+
+
+def terms_of_service(request):
+    """Terms of Service page"""
+    return render(request, "products/terms_of_service.html")

@@ -18,7 +18,7 @@ class EmailService:
         return send_mail(
             subject=subject,
             message=message,
-            from_email=f"JigsimurHerbal Orders <{settings.ORDERS_EMAIL}>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
             html_message=html_message,
             fail_silently=False,
@@ -30,7 +30,7 @@ class EmailService:
         return send_mail(
             subject=subject,
             message=message,
-            from_email=f"JigsimurHerbal Support <{settings.SUPPORT_EMAIL}>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
             html_message=html_message,
             fail_silently=False,
@@ -42,7 +42,7 @@ class EmailService:
         return send_mail(
             subject=subject,
             message=message,
-            from_email=f"JigsimurHerbal <{settings.NOREPLY_EMAIL}>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
             html_message=html_message,
             fail_silently=False,
@@ -54,7 +54,7 @@ class EmailService:
         return send_mail(
             subject=subject,
             message=message,
-            from_email=f"JigsimurHerbal <{settings.CONTACT_EMAIL}>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
             html_message=html_message,
             fail_silently=False,
@@ -88,7 +88,13 @@ class EmailService:
     def send_payment_received_notification(order, admin_emails=None):
         """Send notification to admin when payment is received"""
         if admin_emails is None:
-            admin_emails = [settings.ORDERS_EMAIL]
+            # Extract email from DEFAULT_FROM_EMAIL if it has format "Name <email>"
+            from_email = settings.DEFAULT_FROM_EMAIL
+            if "<" in from_email and ">" in from_email:
+                email_part = from_email.split("<")[1].split(">")[0]
+                admin_emails = [email_part]
+            else:
+                admin_emails = [from_email]
 
         subject = f"Payment Received - Order #{order.order_number}"
         message = f"""

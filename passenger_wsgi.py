@@ -7,7 +7,8 @@ import os
 import sys
 
 # Add your project directory to the sys.path
-INTERP = os.path.expanduser("~/virtualenv/jigsimurherbal/3.9/bin/python3")
+# Update the path to match your cPanel Python application name and version
+INTERP = os.path.expanduser("~/virtualenv/jigsimurherbalwonders.com/3.11/bin/python3")
 if sys.executable != INTERP:
     os.execl(INTERP, INTERP, *sys.argv)
 

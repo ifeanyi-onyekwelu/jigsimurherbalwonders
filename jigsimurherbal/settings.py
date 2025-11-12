@@ -177,6 +177,11 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# WhiteNoise configuration for serving static files
+# Using CompressedStaticFilesStorage instead of CompressedManifestStaticFilesStorage
+# to avoid issues with missing source map files from third-party packages
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
 # Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -197,32 +202,33 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 # Email settings
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"  # For development
-# DEFAULT_FROM_EMAIL = "noreply@jigsimurherbal.com"
-# SERVER_EMAIL = "server@jigsimurherbal.com"
+# Use console backend for development (emails printed to console)
+# Use SMTP backend for production (actual email sending)
 
-# For production, uncomment and configure these:
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
-EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
-EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+# TESTING MODE: Set to True to test SMTP email sending in development
+FORCE_SMTP_BACKEND = config("FORCE_SMTP_BACKEND", default=False, cast=bool)
+
+if DEBUG and not FORCE_SMTP_BACKEND:
+    # Development: Print emails to console
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    # Production or testing SMTP: Send real emails
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
+    EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+    EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+    EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+
 DEFAULT_FROM_EMAIL = config(
     "DEFAULT_FROM_EMAIL", default="JigsimurHerbal <info@jigsimurherbalwonders.com>"
 )
-
-# Additional email addresses
-CONTACT_EMAIL = config("CONTACT_EMAIL", default="info@jigsimurherbalwonders.com")
-ORDERS_EMAIL = config("ORDERS_EMAIL", default="orders@jigsimurherbalwonders.com")
-SUPPORT_EMAIL = config("SUPPORT_EMAIL", default="support@jigsimurherbalwonders.com")
-NOREPLY_EMAIL = config("NOREPLY_EMAIL", default="noreply@jigsimurherbalwonders.com")
 
 # Site URL for email templates and absolute URLs
 SITE_URL = config("SITE_URL", default="http://localhost:8000")
 
 # Server email for admin notifications
-SERVER_EMAIL = config("ORDERS_EMAIL", default="orders@jigsimurherbalwonders.com")
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Password reset settings
 PASSWORD_RESET_TIMEOUT = 3600  # 1 hour in seconds

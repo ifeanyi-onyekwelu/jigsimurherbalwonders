@@ -12,4 +12,9 @@ urlpatterns = [
     path(
         "api/search-suggestions/", views.search_suggestions, name="search_suggestions"
     ),
+    # Static pages
+    path("about/", views.about, name="about"),
+    path("contact/", views.contact, name="contact"),
+    path("privacy-policy/", views.privacy_policy, name="privacy"),
+    path("terms-of-service/", views.terms_of_service, name="terms"),
 ]

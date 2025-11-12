@@ -185,21 +185,60 @@ Or use the keyboard shortcut `Ctrl+Shift+P` → "Django: Run Server"
 
 ## 🚀 Deployment
 
-### Production Setup
+### cPanel Deployment (Recommended)
 
-1. Set `DEBUG=False` in production
-2. Configure PostgreSQL database
-3. Set up proper static file serving
-4. Configure email backend for notifications
-5. Set up SSL/HTTPS
-6. Configure logging
+For detailed cPanel deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
 
-### Heroku Deployment
+**Quick Overview:**
+
+1. **Set up Python app in cPanel**
+
+   - Create Python application (version 3.9+)
+   - Set application startup file: `passenger_wsgi.py`
+   - Set entry point: `application`
+
+2. **Configure environment**
+
+   - Create `.env` file with production settings
+   - Update database credentials (MySQL)
+   - Configure email settings
+
+3. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run Django setup**
+
+   ```bash
+   python manage.py migrate
+   python manage.py collectstatic --noinput
+   python manage.py createsuperuser
+   ```
+
+5. **Configure static/media files** in cPanel
+6. **Restart application**
+
+📋 **Use [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for step-by-step deployment**
+
+### Other Hosting Platforms
+
+#### Heroku Deployment
 
 1. Add `Procfile`: `web: gunicorn jigsimurherbal.wsgi`
 2. Configure environment variables
 3. Set up PostgreSQL addon
 4. Deploy using Git
+
+#### VPS/Cloud Deployment
+
+1. Set `DEBUG=False` in production
+2. Configure PostgreSQL or MySQL database
+3. Set up Gunicorn + Nginx
+4. Configure email backend for notifications
+5. Set up SSL/HTTPS with Let's Encrypt
+6. Configure logging and monitoring
 
 ## 🤝 Contributing
 

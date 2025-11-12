@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - JigsimurHerbal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Page Header -->
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-success mb-3">About JigsimurHerbal</h1>
+    <p class="lead text-muted">Your Trusted Partner in Natural Health Solutions</p>
+  </div>
+
+  <!-- Mission Section -->
+  <div class="row mb-5">
+    <div class="col-lg-8 mx-auto">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h3 text-success mb-4">Our Mission</h2>
+          <p class="text-muted mb-0">
+            At JigsimurHerbal, we are dedicated to providing high-quality natural health products that promote
+            wellness and vitality. Our mission is to harness the power of nature to help people achieve optimal
+            health through carefully selected herbal remedies and supplements.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Values Section -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-leaf fa-3x text-success"></i>
+          </div>
+          <h3 class="h5 mb-3">100% Natural</h3>
+          <p class="text-muted mb-0">
+            We use only pure, natural ingredients sourced from trusted suppliers. No artificial additives or
+            harmful chemicals.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-award fa-3x text-success"></i>
+          </div>
+          <h3 class="h5 mb-3">Quality Assured</h3>
+          <p class="text-muted mb-0">
+            Every product undergoes rigorous testing and quality control to ensure safety, purity, and
+            effectiveness.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-heart fa-3x text-success"></i>
+          </div>
+          <h3 class="h5 mb-3">Customer Focused</h3>
+          <p class="text-muted mb-0">
+            Your health and satisfaction are our top priorities. We're committed to exceptional customer service
+            and support.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Our Story Section -->
+  <div class="row mb-5">
+    <div class="col-lg-8 mx-auto">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h3 text-success mb-4">Our Story</h2>
+          <p class="text-muted mb-3">
+            JigsimurHerbal was founded with a simple belief: nature provides the best solutions for health and
+            wellness. Drawing from centuries of traditional herbal wisdom combined with modern scientific research,
+            we've created a range of products that truly make a difference.
+          </p>
+          <p class="text-muted mb-3">
+            Our team of herbalists, nutritionists, and health experts work tirelessly to develop formulations that
+            are both effective and safe. We believe in transparency, which is why we clearly label all ingredients
+            and provide detailed information about each product.
+          </p>
+          <p class="text-muted mb-0">
+            Today, we're proud to serve thousands of customers who trust us to support their health journey with
+            natural, high-quality herbal products.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why Choose Us -->
+  <div class="row mb-5">
+    <div class="col-lg-8 mx-auto">
+      <h2 class="h3 text-success mb-4 text-center">Why Choose JigsimurHerbal?</h2>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-3">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <strong>Premium Quality:</strong> We source only the finest herbs and ingredients from reputable
+              suppliers.
+            </li>
+            <li class="mb-3">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <strong>Scientific Backing:</strong> Our formulations are based on both traditional knowledge and
+              modern research.
+            </li>
+            <li class="mb-3">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <strong>Transparent Practices:</strong> We provide complete ingredient lists and honest information
+              about our products.
+            </li>
+            <li class="mb-3">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <strong>Expert Support:</strong> Our knowledgeable team is always ready to answer your questions.
+            </li>
+            <li class="mb-0">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <strong>Customer Satisfaction:</strong> We stand behind our products with a satisfaction guarantee.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="text-center py-5">
+    <h2 class="h3 mb-4">Ready to Experience Natural Wellness?</h2>
+    <a href="{% url 'products:product_list' %}" class="btn btn-success btn-lg px-5">
+      Explore Our Products
+    </a>
+  </div>
+</div>
+{% endblock %}

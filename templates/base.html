@@ -139,17 +139,17 @@
           <ul class="list-unstyled">
             <li><a href="{% url 'products:home' %}" class="text-light text-decoration-none">Home</a></li>
             <li><a href="{% url 'products:product_list' %}" class="text-light text-decoration-none">Products</a></li>
-            <li><a href="#" class="text-light text-decoration-none">About Us</a></li>
-            <li><a href="#" class="text-light text-decoration-none">Contact</a></li>
+            <li><a href="{% url 'products:about' %}" class="text-light text-decoration-none">About Us</a></li>
+            <li><a href="{% url 'products:contact' %}" class="text-light text-decoration-none">Contact</a></li>
           </ul>
         </div>
         <div class="col-md-2 mb-4">
-          <h6>Customer Care</h6>
+          <h6>Information</h6>
           <ul class="list-unstyled">
+            <li><a href="{% url 'products:privacy' %}" class="text-light text-decoration-none">Privacy Policy</a></li>
+            <li><a href="{% url 'products:terms' %}" class="text-light text-decoration-none">Terms of Service</a></li>
             <li><a href="#" class="text-light text-decoration-none">FAQ</a></li>
             <li><a href="#" class="text-light text-decoration-none">Shipping Info</a></li>
-            <li><a href="#" class="text-light text-decoration-none">Returns</a></li>
-            <li><a href="#" class="text-light text-decoration-none">Support</a></li>
           </ul>
         </div>
         <div class="col-md-4 mb-4">
@@ -168,8 +168,8 @@
         </div>
         <div class="col-md-6 text-md-end">
           <p class="mb-0">
-            <a href="#" class="text-light text-decoration-none me-3">Privacy Policy</a>
-            <a href="#" class="text-light text-decoration-none">Terms of Service</a>
+            <a href="{% url 'products:privacy' %}" class="text-light text-decoration-none me-3">Privacy Policy</a>
+            <a href="{% url 'products:terms' %}" class="text-light text-decoration-none">Terms of Service</a>
           </p>
         </div>
       </div>
